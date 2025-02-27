@@ -1,0 +1,9 @@
+.navigation ul li .active {
+    color: var(--color-green-600);
+
+}
+
+.tooltip {
+    --tooltip-color: #151515;
+    --tooltip-text-color: white;
+}
