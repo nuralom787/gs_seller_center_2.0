@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @plugin "daisyui";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 .dark {
     background-color: #151515;
@@ -7,4 +9,10 @@
 
 .light {
     background-color: white;
+}
+
+
+body .tooltip {
+    --tooltip-color: #eb1313;
+    --tooltip-text-color: white;
 }

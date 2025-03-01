@@ -2,9 +2,9 @@ const DashboardHome = () => {
 
 
     return (
-        <div>
-            <div className='px-6 mx-auto'>
-                <p className='my-6 font-bold text-lg dark:text-white'>Dashboard Overview</p>
+        <section className="max-h-screen min-h-screen overflow-y-auto px-6 pt-20 pb-10 bg-gray-300 dark:bg-base-300">
+            <p className='my-6 font-bold text-lg dark:text-white'>Dashboard Overview</p>
+            <div className=''>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>
                     <div className='rounded-lg text-white text-center bg-teal-500 px-4 py-8'>
                         <svg className='m-auto text-3xl' stroke="currentColor" fill="currentColor" strokeWidth="0" version="1.1" viewBox="0 0 16 16" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 5l-8-4-8 4 8 4 8-4zM8 2.328l5.345 2.672-5.345 2.672-5.345-2.672 5.345-2.672zM14.398 7.199l1.602 0.801-8 4-8-4 1.602-0.801 6.398 3.199zM14.398 10.199l1.602 0.801-8 4-8-4 1.602-0.801 6.398 3.199z"></path>
@@ -26,7 +26,7 @@ const DashboardHome = () => {
                     </div>
                 </div>
             </div>
-            <div className='px-6 mx-auto'>
+            <div className=''>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8'>
                     <div className="p-4 flex items-center border border-gray-200 dark:border-gray-800 w-full rounded-lg">
                         <div className="flex items-center justify-center p-3 rounded-full h-12 w-12 text-center mr-4 text-lg text-orange-600 dark:text-orange-100 bg-orange-100 dark:bg-orange-500">
@@ -79,7 +79,7 @@ const DashboardHome = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 

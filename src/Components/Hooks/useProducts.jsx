@@ -3,15 +3,15 @@ import axios from "axios";
 
 const useProducts = () => {
 
-    const { data, isPending, refetch } = useQuery({
+    const { data: products, isPending, refetch } = useQuery({
         queryKey: ["products"],
         queryFn: async () => {
-            const res = await axios.get("https://daily-bazar-95aq.onrender.com/products")
+            const res = await axios.get("http://localhost:5000/products")
             return res.data;
         }
     });
 
-    return [data, refetch, isPending];
+    return [products, refetch, isPending];
 };
 
 export default useProducts;
