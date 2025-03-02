@@ -7,6 +7,7 @@ import Orders from './Components/Pages/Orders/Orders'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import UpdateProduct from './Components/Pages/UpdatePages/UpdateProduct/UpdateProduct'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <ToastContainer />
         <Routes>
           <Route path="/" element={<Main />}>
             <Route path='/' element={<DashboardHome />} />

@@ -17,22 +17,22 @@ const UpdateProduct = () => {
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
-    // const [tagItem, setTagItem] = useState("");
+    const [tagItem, setTagItem] = useState("");
     const [tags, setTags] = useState([]);
     const [product, setProduct] = useState({});
     const [upImg, setUpImg] = useState("");
     const [newImg, setNewImg] = useState("");
     const [infoLoading, setInfoLoading] = useState(false);
 
-    const { _id, image, title, slug, description, sku, price, quantity, children, originalPrice, parent, type, unit, tag } = product;
+    const { _id, flashSale, image, thumb, title, slug, description, sku, price, quantity, children, originalPrice, parent, type, unit, tag } = product;
 
 
     // Loping Tag Items.
-    // useEffect(() => {
-    //     for (const item in tag) {
-    //         setTagItem(tag[item]);
-    //     }
-    // }, [tag]);
+    useEffect(() => {
+        for (const item in tag) {
+            setTagItem(tag[item]);
+        }
+    }, [tag]);
 
 
     // Tag Items Split.
@@ -61,6 +61,10 @@ const UpdateProduct = () => {
             setUpImg(imageData);
         };
         setNewImg(e.target.files[0]);
+        toast.success("New Image Selected", {
+            position: "top-center",
+            autoClose: 1500
+        })
     };
 
 
@@ -79,7 +83,9 @@ const UpdateProduct = () => {
         formData.originalPrice = formData.originalPrice ? formData.originalPrice : originalPrice;
         formData.price = formData.price ? formData.price : price;
         formData.tag = tags;
-        console.log(formData);
+        formData.flashSale = formData.flashSale ? formData.flashSale : flashSale;
+
+        // console.log(formData);
 
 
         Swal.fire({
@@ -93,7 +99,8 @@ const UpdateProduct = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 if (newImg) {
-                    console.log("new image Found")
+                    // console.log("new image Found")
+
                     // Upload Image in ImageBB and Get Image URL.
                     const imageFile = { image: formData.image };
                     const res = await axiosPublic.post(image_hosting_api, imageFile, {
@@ -101,70 +108,46 @@ const UpdateProduct = () => {
                             'Content-Type': 'multipart/form-data'
                         }
                     });
-                    // console.log(res.data);
+
                     if (res.data.success) {
                         formData.image = res.data.data.image.url;
                         formData.thumb = res.data.data.thumb.url;
-                        console.log(formData);
+                        // console.log(formData);
+                        const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
+                        // console.log(productRes.data);
+                        if (productRes.data.modifiedCount > 0) {
+                            navigate('/products');
+                            Swal.fire({
+                                title: "Updated!",
+                                text: "Your Product has been Updated Successfully.",
+                                icon: "success"
+                            });
+                        }
                     }
                     else {
-
+                        toast.error("Image Server Dose not Response! Please Try Again..", {
+                            position: "top-center",
+                            autoClose: 3000
+                        })
                     }
                 }
                 else {
-                    console.log("old image Found")
-
+                    // console.log("old image Found");
+                    // console.log(formData);
+                    const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
+                    // console.log(productRes.data);
+                    if (productRes.data.modifiedCount > 0) {
+                        navigate('/products');
+                        Swal.fire({
+                            title: "Updated!",
+                            text: "Your Product has been Updated Successfully.",
+                            icon: "success"
+                        });
+                    }
                 }
-
-
-
-
-
-                // Swal.fire({
-                //     title: "Deleted!",
-                //     text: "Your file has been deleted.",
-                //     icon: "success"
-                // });
             }
         });
-
-
-        // Swal(<div>
-        //     <h2 className='text-xl font-medium'>Are You Sure! Want to Update <span className='text-red-500'>{product.title}</span> Product?</h2>
-        // </div>,
-        //     {
-        //         icon: "warning",
-        //         buttons: true,
-        //         closeOnClickOutside: false,
-        //     })
-        //     .then((willDelete) => {
-        //         if (admin && willDelete) {
-        //             setInfoLoading(true);
-        //             fetch(`http://localhost:5000/up-product/${_id}`, {
-        //                 method: 'PUT',
-        //                 headers: {
-        //                     'content-type': 'application/json'
-        //                 },
-        //                 body: JSON.stringify(data)
-        //             })
-        //                 .then(res => res.json())
-        //                 .then(data => {
-        //                     if (data.acknowledged === true) {
-        //                         toastSuccess();
-        //                         setInfoLoading(false);
-        //                         navigate('/products');
-        //                     } else {
-        //                         toastError();
-        //                     }
-        //                 })
-        //         } else if (willDelete) {
-        //             toast.info("CURD Operation Disabled for Demo Projects!!")
-        //         }
-        //     })
     };
-
-    const toastSuccess = () => toast.success('Your Data Will Be Updated');
-    const toastError = () => toast.error('Somethings Wants Wrong!! Please Try Again');
 
 
     return (
@@ -215,7 +198,7 @@ const UpdateProduct = () => {
                                                     </div>
                                                     :
                                                     <div className="w-fit h-32 px-3 py-2 border border-gray-200 rounded-md">
-                                                        <img className='w-28 h-28' src={`data:image/*;base64,${image}`} alt="" id='ProfileImg' />
+                                                        <img className='w-28 h-28' src={image} alt="" id='ProfileImg' />
                                                     </div>
                                                 }
                                             </div>
@@ -225,28 +208,35 @@ const UpdateProduct = () => {
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">2. Product SKU</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <input defaultValue={sku}  {...register("sku")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" type="text" placeholder="Product SKU" />
+                                            <input defaultValue={sku}  {...register("sku")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0" type="text" placeholder="Product SKU" />
                                             {errors.sku && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.sku.message}</p>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">3. Product Title/Name</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <input defaultValue={title} {...register("title")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" type="text" placeholder="Product title" />
+                                            <input defaultValue={title} {...register("title")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0" type="text" placeholder="Product title" />
                                             {errors.title && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.title.message}</p>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">4. Product Slug</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <input defaultValue={slug} {...register("slug")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" type="text" placeholder="Product slug" />
+                                            <input defaultValue={slug} {...register("slug")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0" type="text" placeholder="Product slug" />
                                             {errors.slug && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.slug.message}</p>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">5. Product Description</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <textarea defaultValue={description} {...register("description")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" placeholder="Product details" rows="4" spellCheck="false">
+                                            <textarea
+                                                defaultValue={description}
+                                                {...register("description")}
+                                                className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0"
+                                                placeholder="Product details"
+                                                cols="30"
+                                                rows="5"
+                                            >
                                             </textarea>
                                             {errors.description && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.description.message}</p>}
                                         </div>
@@ -254,7 +244,7 @@ const UpdateProduct = () => {
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">6. Parent Category</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <select {...register("parent")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0">
+                                            <select {...register("parent")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0">
                                                 <option value={parent} hidden>{parent}</option>
                                                 <option value="Fish &amp; Meat">Fish &amp; Meat</option>
                                                 <option value="Fruits &amp; Vegetable">Fruits &amp; Vegetable</option>
@@ -281,7 +271,7 @@ const UpdateProduct = () => {
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">7. Child Category</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <select {...register("children")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0">
+                                            <select {...register("children")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0">
                                                 <option value={children} hidden>{children}</option>
                                                 <option value="Fish">Fish</option>
                                                 <option value="Meat">Meat</option>
@@ -340,7 +330,7 @@ const UpdateProduct = () => {
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">8. Product Type</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <select {...register("type")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0">
+                                            <select {...register("type")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0">
                                                 <option value={type} hidden>{type}</option>
                                                 <option value="Grocery">Grocery</option>
                                                 <option value="Foods">Foods</option>
@@ -360,28 +350,28 @@ const UpdateProduct = () => {
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">9. Unit (kg/pc/lb/ml/g...etc)</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <input defaultValue={unit} {...register("unit")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" type="text" placeholder="Unit" />
+                                            <input defaultValue={unit} {...register("unit")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0" type="text" placeholder="Unit" />
                                             {errors.unit && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.unit.message}</p>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-sm text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium">10. Product Quantity</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <input defaultValue={quantity} {...register("quantity")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" type="number" placeholder="Quantity" />
+                                            <input defaultValue={quantity} {...register("quantity")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0" type="number" placeholder="Quantity" />
                                             {errors.quantity && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.quantity.message}</p>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">11. Product Price</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <input defaultValue={originalPrice} {...register("originalPrice")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" type="number" placeholder="Price" />
+                                            <input defaultValue={originalPrice} {...register("originalPrice")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0" type="number" placeholder="Price" />
                                             {errors.originalPrice && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.originalPrice.message}</p>}
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">12. Sale Price</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <input defaultValue={price} {...register("price")} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-900 dark:text-white focus:bg-white outline-0" type="number" placeholder="Sale price" />
+                                            <input defaultValue={price} {...register("price")} className="w-full px-3 py-1 text-base font-semibold rounded-md border border-[#151515] dark:border-gray-500 h-12 bg-white dark:bg-gray-900 text-[#151515] dark:text-white outline-0" type="number" placeholder="Sale price" />
                                             {errors.price && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.price.message}</p>}
                                         </div>
                                     </div>
@@ -393,6 +383,22 @@ const UpdateProduct = () => {
                                                 onChange={setTags}
                                                 placeholder="Child category  (Write then press enter to add new child category )"
                                             />
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                                        <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">14. Flash Sale</label>
+                                        <div className="col-span-8 sm:col-span-4">
+                                            <div className="flex items-center gap-6">
+                                                <div className="flex items-center gap-2">
+                                                    <label htmlFor="flashSale">Yes</label>
+                                                    <input {...register("flashSale")} type="radio" name="flashSale" id="flashSale" value={true} defaultChecked={flashSale ? true : false} />
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <label htmlFor="flashSale">No</label>
+                                                    <input {...register("flashSale")} type="radio" name="flashSale" id="flashSale" value={false} defaultChecked={!flashSale ? true : false} />
+                                                </div>
+                                            </div>
+                                            {errors.flashSale && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.flashSale.message}</p>}
                                         </div>
                                     </div>
                                     <div className="my-5 md:my-10 sm:text-right">
