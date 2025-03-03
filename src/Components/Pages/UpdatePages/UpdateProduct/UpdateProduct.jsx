@@ -7,12 +7,14 @@ import Swal from "sweetalert2";
 import './UpdateProduct.css';
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useProducts from "../../../Hooks/useProducts";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 
 const UpdateProduct = () => {
     const { id } = useParams();
+    const [, refetch] = useProducts();
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
@@ -71,6 +73,7 @@ const UpdateProduct = () => {
     // Add New Staff Information.
     const onSubmit = async (formData) => {
         formData.image = newImg ? newImg : image;
+        formData.thumb = thumb;
         formData.sku = formData.sku ? formData.sku : sku;
         formData.title = formData.title ? formData.title : title;
         formData.slug = formData.slug ? formData.slug : slug;
@@ -99,8 +102,6 @@ const UpdateProduct = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 if (newImg) {
-                    // console.log("new image Found")
-
                     // Upload Image in ImageBB and Get Image URL.
                     const imageFile = { image: formData.image };
                     const res = await axiosPublic.post(image_hosting_api, imageFile, {
@@ -109,6 +110,7 @@ const UpdateProduct = () => {
                         }
                     });
 
+                    // Store Data In Database.
                     if (res.data.success) {
                         formData.image = res.data.data.image.url;
                         formData.thumb = res.data.data.thumb.url;
@@ -116,6 +118,7 @@ const UpdateProduct = () => {
                         const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
                         // console.log(productRes.data);
                         if (productRes.data.modifiedCount > 0) {
+                            refetch()
                             navigate('/products');
                             Swal.fire({
                                 title: "Updated!",
@@ -132,11 +135,9 @@ const UpdateProduct = () => {
                     }
                 }
                 else {
-                    // console.log("old image Found");
-                    // console.log(formData);
                     const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
-                    // console.log(productRes.data);
                     if (productRes.data.modifiedCount > 0) {
+                        refetch();
                         navigate('/products');
                         Swal.fire({
                             title: "Updated!",

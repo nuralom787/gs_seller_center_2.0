@@ -44,7 +44,7 @@ const Header = () => {
     }, [theme]);
 
     return (
-        <div className="absolute w-full bg-gray-300 dark:bg-base-200 px-4 py-6 border-b border-b-black dark:border-b-white">
+        <div className="absolute w-full bg-gray-200 dark:bg-base-200 px-4 py-6 border-b border-b-black dark:border-b-white">
             <ul className="flex justify-end items-center gap-6">
                 <li className="tooltip tooltip-bottom text-2xl cursor-pointer" data-tip="Theme">
                     {theme === "light" ?

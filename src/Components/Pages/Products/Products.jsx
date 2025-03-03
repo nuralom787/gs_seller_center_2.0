@@ -96,7 +96,7 @@ const Products = () => {
 
 
     return (
-        <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-gray-400 dark:bg-base-300">
+        <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <div className='px-6 font-sans'>
                 <h2 className='my-4 font-bold text-lg text-[#151515] dark:text-white'>Products</h2>
                 <div className='mb-6'>
@@ -146,7 +146,7 @@ const Products = () => {
                 {isPending ?
                     <div className="flex justify-center items-center my-40">
                         <ScaleLoader
-                            color={"#FFF"}
+                            color={"#00a63e"}
                             loading={true}
                             size={500}
                             aria-label="Loading Spinner"
@@ -177,7 +177,7 @@ const Products = () => {
                                                 products.products.map((product, idx) => <tr className='' key={product._id}>
                                                     <td className='px-3 py-3 text-xs font-bold text-center'>{idx + 1}</td>
                                                     <td className='px-3 py-3 flex items-center justify-start text-sm'>
-                                                        {product.image && <img className='w-8 hidden sm:block shadow-inner rounded-full p-1 mr-2' src={product.image} alt="" />}
+                                                        {product.thumb && <img className='w-12 h-12 hidden sm:block shadow-inner rounded-full p-1 mr-2' src={product.thumb} alt="" />}
                                                         {product.title}
                                                     </td>
                                                     <td className='px-3 py-3 text-sm font-bold'>${product.price.toFixed(2)}</td>
@@ -195,7 +195,7 @@ const Products = () => {
                                                         }
                                                     </td>
                                                     <td className='px-3 py-3 text-sm'>
-                                                        <NavLink to={`/product/${product._id}`} title='Details' className="text-md flex justify-center text-center hover:text-green-500 duration-300">
+                                                        <NavLink to={`/products/details/${product._id}`} title='Details' className="text-md flex justify-center text-center hover:text-green-500 duration-300">
                                                             <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line>
                                                             </svg>
                                                         </NavLink>
