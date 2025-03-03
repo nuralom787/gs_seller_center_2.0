@@ -5,13 +5,17 @@ import useProducts from "../../Hooks/useProducts";
 import { BiSolidEdit } from "react-icons/bi";
 import { FaTrashAlt } from "react-icons/fa";
 import { PiSmileySadBold } from "react-icons/pi";
+import { FiZoomIn } from "react-icons/fi";
 import { ScaleLoader } from "react-spinners";
+import { Tooltip } from 'react-tooltip'
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import { toast } from "react-toastify";
 
 
 const Products = () => {
     const [products, refetch, isPending] = useProducts();
-    // console.log(products);
-    // const { admin } = useFirebase();
+    const axiosSecure = useAxiosSecure();
+
     const { register, handleSubmit } = useForm();
     const [categories, setCategories] = useState([]);
     const [products2, setProducts2] = useState([]);
@@ -23,46 +27,9 @@ const Products = () => {
     const [csvFile, setCSVFile] = useState({});
     const [category, setCategory] = useState('');
     const [infoLoading, setInfoLoading] = useState(true);
-    // const [price, setPrice] = useState('');
+    const [price, setPrice] = useState('');
     const [page, setPage] = useState(0);
     const size = 15;
-
-
-    // useEffect(() => {
-    //     fetch("./products.json")
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             setProducts2(data)
-    //             console.log(data)
-    //         })
-    // }, [])
-
-
-    // Load Products.
-    // useEffect(() => {
-    //     fetch(`https://daily-bazar-95aq.onrender.com/products?page=${page}&&size=${size}&&category=${category}`)
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             setProducts(data.products);
-    //             const count = data.count;
-    //             const pageNumber = Math.ceil(count / size);
-    //             setPageCount(pageNumber);
-    //             fetch('https://daily-bazar-95aq.onrender.com/products')
-    //                 .then(res => res.json())
-    //                 .then(data => {
-    //                     setTotalProduct(data.products);
-    //                     setInfoLoading(false);
-    //                 })
-    //         })
-    // }, [page, category, status, deleteCount]);
-
-
-    // Load categories.
-    // useEffect(() => {
-    //     fetch('https://daily-bazar-95aq.onrender.com/categories')
-    //         .then(res => res.json())
-    //         .then(data => setCategories(data.categories))
-    // }, []);
 
 
     // Sort Product By Price.
@@ -75,28 +42,40 @@ const Products = () => {
         console.log(data)
     };
 
-    // Sweet Alert.
-    const sweetAlert = (product) => {
-    };
-
 
     // Update Product Status.
-    const upStatus = (product) => {
+    const upStatus = async (product) => {
+        const currentStatus = { status: product.status };
+
+        // Fetch Data By Using Axios.
+        const statusRes = await axiosSecure.patch(`/update/product-status/${product._id}`, currentStatus);
+        if (statusRes.data.modifiedCount > 0) {
+            refetch();
+            toast.success("Status Update Successfully!");
+        }
+        else {
+            toast.error("Somethings wants wrong!! please try again.");
+        };
     };
 
 
     // Delete Product Function.
     const deleteProduct = (id) => {
+
     };
 
 
     // Format The Uploaded File Size.
     const formatFileSize = function (bytes) {
+        const sizes = ['B', 'kB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(1024));
+        return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
     };
 
 
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
+            <Tooltip id="my-tooltip" />
             <div className='px-6 font-sans'>
                 <h2 className='my-4 font-bold text-lg text-[#151515] dark:text-white'>Products</h2>
                 <div className='mb-6'>
@@ -138,7 +117,7 @@ const Products = () => {
                                 <option value="High">High To Low</option>
                             </select>
                         </div>
-                        <NavLink to="/add-products" className='bg-green-500 hover:bg-green-600 duration-500 text-white text-center py-3 rounded-md'>
+                        <NavLink to="/products/add-product" className='bg-green-500 hover:bg-green-600 duration-500 text-white text-center py-3 rounded-md'>
                             +Add Product
                         </NavLink>
                     </div>
@@ -176,48 +155,79 @@ const Products = () => {
                                             {
                                                 products.products.map((product, idx) => <tr className='' key={product._id}>
                                                     <td className='px-3 py-3 text-xs font-bold text-center'>{idx + 1}</td>
-                                                    <td className='px-3 py-3 flex items-center justify-start text-sm'>
+                                                    <td className='px-3 py-3 flex items-center justify-start'>
                                                         {product.thumb && <img className='w-12 h-12 hidden sm:block shadow-inner rounded-full p-1 mr-2' src={product.thumb} alt="" />}
                                                         {product.title}
                                                     </td>
-                                                    <td className='px-3 py-3 text-sm font-bold'>${product.price.toFixed(2)}</td>
-                                                    <td className='px-3 py-3 text-sm text-center'>{product.quantity < 0 ? 0 : product.quantity}</td>
-                                                    <td className='px-3 py-3 text-sm'>
+                                                    <td className='px-3 py-3 font-bold'>${product.price.toFixed(2)}</td>
+                                                    <td className='px-3 py-3 text-center'>{product.quantity < 0 ? 0 : product.quantity}</td>
+                                                    <td className='px-3 py-3'>
                                                         {product.quantity > 0 ?
                                                             <span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-100">In Stock</span>
                                                             :
                                                             <span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-red-500 bg-red-100 dark:text-red-100 dark:bg-red-800">Stock Out</span>
                                                         }
                                                     </td>
-                                                    <td className='px-3 py-3 text-sm font-bold'>
+                                                    <td className='px-3 py-3 font-bold'>
                                                         {product.discount > 0 &&
                                                             <span>{Math.ceil(product.discount)}% OFF </span>
                                                         }
                                                     </td>
-                                                    <td className='px-3 py-3 text-sm'>
-                                                        <NavLink to={`/products/details/${product._id}`} title='Details' className="text-md flex justify-center text-center hover:text-green-500 duration-300">
-                                                            <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line>
-                                                            </svg>
+                                                    <td className='px-3 py-3 text-2xl'>
+                                                        <NavLink
+                                                            to={`/products/details/${product._id}`}
+                                                            title='Details'
+                                                            className="text-md flex justify-center text-center hover:text-green-500 duration-300"
+                                                            data-tooltip-id="my-tooltip"
+                                                            data-tooltip-content="Details"
+                                                            data-tooltip-place="bottom"
+                                                        >
+                                                            <FiZoomIn />
                                                         </NavLink>
                                                     </td>
-                                                    <td className='px-3 py-3 text-sm'>
+                                                    <td className='px-3 py-3'>
                                                         {product.status === "Show" ?
-                                                            <button onClick={() => upStatus(product)} title='Showing' className="text-xl flex justify-center text-center m-auto">
+                                                            <button
+                                                                onClick={() => upStatus(product)}
+                                                                className="text-2xl flex justify-center text-center m-auto"
+                                                                data-tooltip-id="my-tooltip"
+                                                                data-tooltip-content="Visible"
+                                                                data-tooltip-place="bottom"
+                                                            >
                                                                 <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" className="text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M5 3a5 5 0 0 0 0 10h6a5 5 0 0 0 0-10H5zm6 9a4 4 0 1 1 0-8 4 4 0 0 1 0 8z"></path>
                                                                 </svg>
                                                             </button>
                                                             :
-                                                            <button onClick={() => upStatus(product)} title='Not Showing' className="text-xl flex justify-center text-center m-auto">
-                                                                <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" className="text-orange-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M11 4a4 4 0 0 1 0 8H8a4.992 4.992 0 0 0 2-4 4.992 4.992 0 0 0-2-4h3zm-6 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8zM0 8a5 5 0 0 0 5 5h6a5 5 0 0 0 0-10H5a5 5 0 0 0-5 5z"></path>
+                                                            <button
+                                                                onClick={() => upStatus(product)}
+                                                                className="text-2xl flex justify-center text-center m-auto"
+                                                                data-tooltip-id="my-tooltip"
+                                                                data-tooltip-content="Hide"
+                                                                data-tooltip-place="bottom"
+                                                            >
+                                                                <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 16 16" className="text-red-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M11 4a4 4 0 0 1 0 8H8a4.992 4.992 0 0 0 2-4 4.992 4.992 0 0 0-2-4h3zm-6 8a4 4 0 1 1 0-8 4 4 0 0 1 0 8zM0 8a5 5 0 0 0 5 5h6a5 5 0 0 0 0-10H5a5 5 0 0 0-5 5z"></path>
                                                                 </svg>
-                                                            </button>}
+                                                            </button>
+                                                        }
                                                     </td>
                                                     <td className='py-3 text-2xl'>
-                                                        <div className="flex justify-center">
-                                                            <NavLink to={`/products/update/${product._id}`} title='Edit' className="p-2 text-gray-400 hover:text-green-600">
+                                                        <div className="flex justify-center items-center gap-4">
+                                                            <NavLink
+                                                                to={`/products/update/${product._id}`}
+                                                                className="text-green-700 hover:text-green-400"
+                                                                data-tooltip-id="my-tooltip"
+                                                                data-tooltip-content="Edit"
+                                                                data-tooltip-place="bottom"
+                                                            >
                                                                 <BiSolidEdit />
                                                             </NavLink>
-                                                            <button onClick={() => sweetAlert(product)} title='Delete' className="p-2 text-gray-400 hover:text-red-600">
+                                                            <button
+                                                                onClick={() => sweetAlert(product)}
+                                                                className="text-red-400 hover:text-red-700 cursor-pointer"
+                                                                data-tooltip-id="my-tooltip"
+                                                                data-tooltip-content="Delete"
+                                                                data-tooltip-place="bottom"
+                                                            >
                                                                 <FaTrashAlt />
                                                             </button>
                                                         </div>

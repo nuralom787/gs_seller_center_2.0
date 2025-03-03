@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
 import { TagsInput } from 'react-tag-input-component';
@@ -8,6 +8,7 @@ import './UpdateProduct.css';
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useProducts from "../../../Hooks/useProducts";
+import { FaCloudUploadAlt } from "react-icons/fa";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
@@ -18,13 +19,14 @@ const UpdateProduct = () => {
     const axiosPublic = useAxiosPublic();
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
+    const parentRef = useRef(null);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const [tagItem, setTagItem] = useState("");
     const [tags, setTags] = useState([]);
     const [product, setProduct] = useState({});
     const [upImg, setUpImg] = useState("");
     const [newImg, setNewImg] = useState("");
-    const [infoLoading, setInfoLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const { _id, flashSale, image, thumb, title, slug, description, sku, price, quantity, children, originalPrice, parent, type, unit, tag } = product;
 
@@ -70,7 +72,7 @@ const UpdateProduct = () => {
     };
 
 
-    // Add New Staff Information.
+    // Update Product Information.
     const onSubmit = async (formData) => {
         formData.image = newImg ? newImg : image;
         formData.thumb = thumb;
@@ -101,6 +103,7 @@ const UpdateProduct = () => {
             confirmButtonText: "Yes, Update it!"
         }).then(async (result) => {
             if (result.isConfirmed) {
+                setLoading(true)
                 if (newImg) {
                     // Upload Image in ImageBB and Get Image URL.
                     const imageFile = { image: formData.image };
@@ -112,11 +115,12 @@ const UpdateProduct = () => {
 
                     // Store Data In Database.
                     if (res.data.success) {
+                        // Set Product image and thumb.
                         formData.image = res.data.data.image.url;
                         formData.thumb = res.data.data.thumb.url;
-                        // console.log(formData);
+
+                        // Call Product Update Api.
                         const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
-                        // console.log(productRes.data);
                         if (productRes.data.modifiedCount > 0) {
                             refetch()
                             navigate('/products');
@@ -125,6 +129,7 @@ const UpdateProduct = () => {
                                 text: "Your Product has been Updated Successfully.",
                                 icon: "success"
                             });
+                            setLoading(false);
                         }
                     }
                     else {
@@ -132,9 +137,11 @@ const UpdateProduct = () => {
                             position: "top-center",
                             autoClose: 3000
                         })
+                        setLoading(false);
                     }
                 }
                 else {
+                    // Call Product Update Api.
                     const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
                     if (productRes.data.modifiedCount > 0) {
                         refetch();
@@ -144,29 +151,46 @@ const UpdateProduct = () => {
                             text: "Your Product has been Updated Successfully.",
                             icon: "success"
                         });
+                        setLoading(false);
                     }
                 }
             }
         });
     };
 
+    // Handle Input Focusing By On Click.
+    const focusInput = () => {
+        const input = parentRef.current?.querySelector("input");
+        if (input) {
+            input.focus()
+        };
+    }
 
     return (
-        <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-gray-400 dark:bg-base-300">
+        <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <section className="flex justify-center items-center">
                 <div className='px-6 mx-auto'>
-                    <div className='flex items-center justify-between border-b border-gray-300 dark:border-gray-500'>
-                        <h2 className='my-4 font-bold text-lg dark:text-white'>Update Product Information</h2>
-                        {infoLoading ?
-                            <button disabled onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
+                    <div className='flex items-center justify-between'>
+                        <h2 className='my-4 font-bold text-lg text-[#151515] dark:text-white'>Update Product Information</h2>
+                        {loading ?
+                            <button
+                                disabled
+                                className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500"
+                            >
                                 Cancel
                             </button>
                             :
-                            <button onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
+                            <button
+                                onClick={() => window.history.back()}
+                                className="cursor-pointer font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500"
+                            >
                                 Cancel
                             </button>
                         }
                     </div>
+
+                    <div className="divider before:bg-[#151515] after:bg-[#151515] dark:before:bg-white dark:after:bg-white my-1"></div>
+
                     <div className="w-full overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-900 mt-5 mb-8">
                         <div>
                             <form onSubmit={handleSubmit(onSubmit)}>
@@ -378,7 +402,7 @@ const UpdateProduct = () => {
                                     </div>
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">13. Product Tag</label>
-                                        <div className="col-span-8 sm:col-span-4">
+                                        <div ref={parentRef} onClick={() => focusInput()} className="col-span-8 sm:col-span-4">
                                             <TagsInput
                                                 value={tags ? tags : []}
                                                 onChange={setTags}
@@ -389,33 +413,58 @@ const UpdateProduct = () => {
                                     <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                         <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">14. Flash Sale</label>
                                         <div className="col-span-8 sm:col-span-4">
-                                            <div className="flex items-center gap-6">
-                                                <div className="flex items-center gap-2">
-                                                    <label htmlFor="flashSale">Yes</label>
-                                                    <input {...register("flashSale")} type="radio" name="flashSale" id="flashSale" value={true} defaultChecked={flashSale ? true : false} />
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <label htmlFor="flashSale">No</label>
-                                                    <input {...register("flashSale")} type="radio" name="flashSale" id="flashSale" value={false} defaultChecked={!flashSale ? true : false} />
-                                                </div>
-                                            </div>
+                                            <fieldset className="flex items-center gap-6 border px-4 py-2 rounded-lg text-[#151515] dark:text-white">
+                                                <legend className="px-2 italic">Flash Sale</legend>
+                                                <label htmlFor="flashSale">
+                                                    <span className="pr-4">Yes</span>
+                                                    <input
+                                                        {...register("flashSale")}
+                                                        className="outline-0 border-0"
+                                                        type="radio"
+                                                        name="flashSale"
+                                                        id="flashSale"
+                                                        value={true}
+                                                        defaultChecked={flashSale ? true : false}
+                                                    />
+                                                </label>
+                                                <label htmlFor="flashSale">
+                                                    <span className="pr-4">No</span>
+                                                    <input
+                                                        {...register("flashSale")}
+                                                        className="outline-0 border-0"
+                                                        type="radio"
+                                                        name="flashSale"
+                                                        id="flashSale"
+                                                        value={false}
+                                                        defaultChecked={!flashSale ? true : false}
+                                                    />
+
+                                                </label>
+                                            </fieldset>
                                             {errors.flashSale && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.flashSale.message}</p>}
                                         </div>
                                     </div>
-                                    <div className="my-5 md:my-10 sm:text-right">
-                                        {/* {infoLoading ?
-                                    <button disabled onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
-                                        Cancel
-                                    </button>
-                                    :
-                                    <button onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
-                                        Cancel
-                                    </button>
-                                } */}
-                                        {infoLoading ?
-                                            <button disabled className="inline-flex w-full sm:w-fit items-center font-medium outline-0 px-4 sm:py-2 py-3 text-sm rounded-md md:rounded-lg border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 transition-colors duration-500 md:ml-4" type="submit">
-                                                <svg stroke="white" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" className="text-xxl text-green-500 mr-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path><polyline points="16 16 12 12 8 16"></polyline>
-                                                </svg>
+                                    <div className="my-5 md:my-10 flex flex-col md:flex-row justify-end items-center gap-6 text-center space-y-4 md:space-y-0">
+                                        {/* {loading ?
+                                            <button
+                                                disabled
+                                                className="w-full md:w-fit flex justify-center items-center gap-4 font-medium outline-0 px-6 py-3 text-lg rounded-md border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 duration-500"
+                                            >
+                                                <FaArrowLeft />
+                                                Cancel
+                                            </button>
+                                            :
+                                            <button
+                                                onClick={() => window.history.back()}
+                                                className="cursor-pointer w-full md:w-fit flex justify-center items-center gap-4 font-medium outline-0 px-6 py-3 text-lg rounded-md border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 duration-500"
+                                            >
+                                                <FaArrowLeft />
+                                                Cancel
+                                            </button>
+                                        } */}
+                                        {loading ?
+                                            <button disabled className="flex justify-center items-center gap-4 w-full sm:w-fit font-medium outline-0 px-6 py-3 text-lg rounded-md border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 transition-colors duration-500" type="submit">
+                                                <FaCloudUploadAlt className="text-2xl" />
                                                 Update
                                                 <svg className="ml-2 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -423,9 +472,9 @@ const UpdateProduct = () => {
                                                 </svg>
                                             </button>
                                             :
-                                            <button className="w-full sm:w-fit items-center font-medium outline-0 px-4 sm:py-2 py-3 text-sm rounded-md md:rounded-lg border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 transition-colors duration-500 md:ml-4">
-                                                {/* <svg stroke="white" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" className="text-xxl text-green-500 mr-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path><polyline points="16 16 12 12 8 16"></polyline>
-                                        </svg> */}
+                                            <button
+                                                className="w-full md:w-fit flex justify-center items-center gap-3 font-medium outline-0 px-6 py-3 text-lg rounded-md border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 duration-500">
+                                                <FaCloudUploadAlt className="text-2xl" />
                                                 Update
                                             </button>
                                         }

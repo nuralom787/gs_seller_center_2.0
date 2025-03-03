@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import UpdateProduct from './Components/Pages/UpdatePages/UpdateProduct/UpdateProduct'
 import { ToastContainer } from 'react-toastify'
 import ProductDetails from './Components/Pages/DetailsPages/ProductDetails/ProductDetails'
+import AddProduct from './Components/Pages/AddPages/AddProduct/AddProduct'
 
 function App() {
   const queryClient = new QueryClient();
@@ -35,8 +36,9 @@ function App() {
             <Route path='/' element={<DashboardHome />} />
             <Route path='/products' element={<Products />} />
             <Route path='/orders' element={<Orders />} />
-            <Route path='/products/update/:id' element={<UpdateProduct />} />
+            <Route path='/products/add-product' element={<AddProduct />} />
             <Route path='/products/details/:id' element={<ProductDetails />} />
+            <Route path='/products/update/:id' element={<UpdateProduct />} />
           </Route>
         </Routes>
       </BrowserRouter>
