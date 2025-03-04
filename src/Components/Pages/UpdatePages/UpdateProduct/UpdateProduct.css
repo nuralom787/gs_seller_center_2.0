@@ -51,12 +51,9 @@
 }
 
 .rti--input {
-    padding: .8rem !important;
     color: #151515 !important;
 }
 
 [class="dark"] .rti--input {
-    padding: .8rem !important;
     color: #FFF !important;
-    /* width: 100% !important; */
 }

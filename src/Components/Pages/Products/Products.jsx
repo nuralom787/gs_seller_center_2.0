@@ -3,39 +3,23 @@ import { useForm } from "react-hook-form";
 import { NavLink } from "react-router";
 import useProducts from "../../Hooks/useProducts";
 import { BiSolidEdit } from "react-icons/bi";
-import { FaTrashAlt } from "react-icons/fa";
+import { FaTrashAlt, FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { PiSmileySadBold } from "react-icons/pi";
 import { FiZoomIn } from "react-icons/fi";
 import { ScaleLoader } from "react-spinners";
 import { Tooltip } from 'react-tooltip'
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import ReactPaginate from "react-paginate";
 
 
 const Products = () => {
-    const [products, refetch, isPending] = useProducts();
     const axiosSecure = useAxiosSecure();
-
     const { register, handleSubmit } = useForm();
-    const [categories, setCategories] = useState([]);
-    const [products2, setProducts2] = useState([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [totalProduct, setTotalProduct] = useState([]);
-    const [status, setStatus] = useState(true);
-    const [deleteCount, setDeleteCount] = useState(true);
-    const [search, setSearch] = useState(false);
-    const [csvFile, setCSVFile] = useState({});
-    const [category, setCategory] = useState('');
-    const [infoLoading, setInfoLoading] = useState(true);
-    const [price, setPrice] = useState('');
-    const [page, setPage] = useState(0);
-    const size = 15;
+    const [products, refetch, isPending, itemPerPage, setCurrentPage, perPageItem] = useProducts();
 
-
-    // Sort Product By Price.
-    const sortByPrice = (price) => {
-    };
-
+    const totalPages = Math.ceil(products?.count / itemPerPage);
 
     // Search Product By Name/Title.
     const onSubmit = (data) => {
@@ -60,8 +44,36 @@ const Products = () => {
 
 
     // Delete Product Function.
-    const deleteProduct = (id) => {
+    const deleteProduct = (product) => {
+        console.log("delete function call for: ", product._id);
 
+        Swal.fire({
+            title: "Are you sure?",
+            html: `
+            <p>Do you want to delete <strong>${product.title}?</strong> Once deleted, You can't revert this!</p>
+            `,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+
+                // Call Delete Api.
+                const deleteRes = await axiosSecure.delete(`/product/delete/${product._id}`);
+                console.log(deleteRes);
+
+                if (deleteRes.data.deletedCount > 0) {
+                    refetch();
+                    Swal.fire({
+                        title: "Deleted!",
+                        html: `<p>The Product <strong>${product.title}</strong> has been deleted successfully.</p>`,
+                        icon: "success"
+                    });
+                }
+            }
+        });
     };
 
 
@@ -70,6 +82,10 @@ const Products = () => {
         const sizes = ['B', 'kB', 'MB', 'GB', 'TB'];
         const i = Math.floor(Math.log(bytes) / Math.log(1024));
         return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
+    };
+
+    const handlePageClick = (event) => {
+        setCurrentPage(event.selected + 1);
     };
 
 
@@ -86,11 +102,11 @@ const Products = () => {
                                 className='w-full border border-gray-300 dark:border-gray-500 focus:border-gray-500 dark:focus:border-gray-100 bg-gray-200 dark:bg-gray-800 text-[#151515] dark:text-white px-3 py-3 rounded my-4 outline-0'
                                 type="search"
                                 placeholder='Search by Product Name' />
-                            {search &&
+                            {/* {search &&
                                 <svg className="ml-2 mr-4 h-6 w-6 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="green" strokeWidth="4"></circle>
                                     <path className="opacity-75" fill="green" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                            }
+                                </svg> */}
+                            {/* } */}
                         </form>
                         <div className=''>
                             <select
@@ -101,14 +117,14 @@ const Products = () => {
                                 <option value="All" hidden>Category</option>
                                 <option value="All" >Category</option>
                                 <option value="All" >Category</option>
-                                {
+                                {/* {
                                     categories.map(category => <option key={category.parent}>{category.parent}</option>)
-                                }
+                                } */}
                             </select>
                         </div>
                         <div className=''>
                             <select
-                                onChange={(e) => sortByPrice(e.target.value)}
+                                // onChange={(e) => sortByPrice(e.target.value)}
                                 className='w-full bg-gray-200 dark:bg-gray-800 text-[#151515] dark:text-white p-3 border border-gray-300 dark:border-gray-500 dark:focus:border-gray-100 outline-0 rounded-md'
                                 name=""
                                 id="">
@@ -153,7 +169,7 @@ const Products = () => {
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
                                             {
-                                                products.products.map((product, idx) => <tr className='' key={product._id}>
+                                                products.products?.map((product, idx) => <tr className='' key={product._id}>
                                                     <td className='px-3 py-3 text-xs font-bold text-center'>{idx + 1}</td>
                                                     <td className='px-3 py-3 flex items-center justify-start'>
                                                         {product.thumb && <img className='w-12 h-12 hidden sm:block shadow-inner rounded-full p-1 mr-2' src={product.thumb} alt="" />}
@@ -222,7 +238,7 @@ const Products = () => {
                                                                 <BiSolidEdit />
                                                             </NavLink>
                                                             <button
-                                                                onClick={() => sweetAlert(product)}
+                                                                onClick={() => deleteProduct(product)}
                                                                 className="text-red-400 hover:text-red-700 cursor-pointer"
                                                                 data-tooltip-id="my-tooltip"
                                                                 data-tooltip-content="Delete"
@@ -237,22 +253,28 @@ const Products = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                                {/* <div className='flex items-center justify-between p-4 mb-6 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-700 rounded-b-lg'>
-                                    <div className='text-xs font-bold text-gray-600 dark:text-gray-300'>
-                                        SHOWING {(page * data?.count) + 1}-{(page + 1) * data?.count} OF {totalProduct.length}
-                                    </div>
-                                    <div className='text-xs font-bold bg-gray-100 dark:bg-gray-800 rounded'>
-                                        {
-                                            [...Array(pageCount).keys()]
-                                                .map(number => <button
-                                                    key={number}
-                                                    onClick={() => setPage(number)}
-                                                    className={number === page ? 'px-3 py-2 bg-green-400 text-white border-gray-200 rounded' : 'px-3 py-2 border-gray-200 dark:text-gray-200 rounded'}>
-                                                    {number + 1}
-                                                </button>)
-                                        }
-                                    </div>
-                                </div> */}
+                                <div className="p-6 mb-10 flex justify-end items-center bg-white dark:bg-gray-900 border border-t-0 border-gray-100 dark:border-gray-700 rounded-b-lg">
+                                    {/* <select onChange={perPageItem} className="bg-white dark:bg-gray-900 text-[#151515] dark:text-white" name="itemPerPage" id="">
+                                        <option value="15">15</option>
+                                        <option value="25">25</option>
+                                        <option value="30">30</option>
+                                    </select> */}
+                                    <ReactPaginate
+                                        previousLabel={<FaArrowLeft />}
+                                        nextLabel={<FaArrowRight />}
+                                        breakLabel={"..."}
+                                        pageCount={totalPages}
+                                        marginPagesDisplayed={1}
+                                        pageRangeDisplayed={3}
+                                        onPageChange={handlePageClick}
+                                        containerClassName={"flex space-x-2 cursor-pointer"}
+                                        pageClassName={"px-3 py-1 bg-gray-900 hover:bg-base-100 duration-300 font-bold rounded"}
+                                        activeClassName={"bg-green-600 hover:bg-green-600 transition-discrete font-bold text-white"}
+                                        previousClassName={"p-2 text-lg text-[#151515] dark:text-white hover:bg-base-100 duration-300 rounded"}
+                                        nextClassName={"p-2 text-lg text-[#151515] dark:text-white hover:bg-base-100 duration-300 rounded"}
+                                        breakClassName={"px-3 py-1"}
+                                    />
+                                </div>
                             </div>
                             :
                             <div className='text-center my-16'>

@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { TagsInput } from "react-tag-input-component";
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+import useProducts from "../../../Hooks/useProducts";
+const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const AddProduct = () => {
+    const [, refetch] = useProducts();
+    const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
+    const parentRef = useRef(null);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [tags, setTags] = useState([]);
     const [upImg, setUpImg] = useState("");
-    const [infoLoading, setInfoLoading] = useState(false);
+    const [newImg, setNewImg] = useState("");
+    const [loading, setLoading] = useState(false);
 
 
     // Preview Image Before Upload.
@@ -20,62 +29,107 @@ const AddProduct = () => {
             const imageData = reader.result.split(",")[1];
             setUpImg(imageData);
         };
+        setNewImg(e.target.files[0])
     };
 
 
     // Add New Product.
-    const onSubmit = data => {
-        data.tag = tags;
-        data.image = upImg;
-        Swal(<div>
-            <h2 className='text-xl font-medium'>Are You Sure to Add This Product?</h2>
-            {/* <p className='mt-3 text-black text-md text-center'>Do you really want to delete these records? You can't view this in your list anymore if you delete!</p> */}
-        </div>,
-            {
-                icon: "warning",
-                buttons: true,
-                closeOnClickOutside: false,
-            })
-            .then((willDelete) => {
-                if (willDelete) {
-                    setInfoLoading(true);
-                    fetch('https://daily-bazar-95aq.onrender.com/add-product', {
-                        method: 'POST',
+    const onSubmit = formData => {
+        formData.tag = tags;
+        formData.image = newImg;
+
+        if (tags.length) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You want to add this Product!",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Add"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    setLoading(true);
+
+                    // Upload Image in ImageBB and Get Image URL.
+                    const imageFile = { image: formData.image };
+                    const res = await axiosSecure.post(image_hosting_api, imageFile, {
                         headers: {
-                            'content-type': 'application/json'
-                        },
-                        body: JSON.stringify(data)
-                    })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.acknowledged === true && data.insertedId) {
-                                // toastSuccess();
-                                setInfoLoading(false);
-                                navigate('/products');
-                            } else {
-                                // toastError();
-                            }
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+
+                    // Store Data In Database.
+                    if (res.data.success) {
+                        // Set Product image and thumb.
+                        formData.image = res.data.data.image.url;
+                        formData.thumb = res.data.data.thumb.url;
+
+                        // Call Product Update Api.
+                        const productRes = await axiosSecure.post(`/add-new/product`, formData);
+                        if (productRes.data.insertedId) {
+                            refetch();
+                            Swal.fire({
+                                title: "Succeed!",
+                                text: "Your Product has been Added Successfully!",
+                                icon: "success"
+                            });
+                            setLoading(false);
+                            navigate('/products');
+                        }
+                    }
+                    else {
+                        toast.error("Image Server Dose not Response! Please Try Again..", {
+                            position: "top-center",
+                            autoClose: 3000
                         })
+                        setLoading(false);
+                    }
                 }
+            });
+        }
+        else {
+            toast.error("Tag Field Is Empty! You Must Have Some Tags For This Product..", {
+                position: "top-center",
+                autoClose: 2500
             })
+            focusInput();
+        }
     };
+
+
+    // Handle Input Focusing By On Click.
+    const focusInput = () => {
+        const input = parentRef.current?.querySelector("input");
+        if (input) {
+            input.focus()
+        };
+    }
 
 
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <div className='px-6 mx-auto'>
-                <div className='flex items-center justify-between border-b border-gray-300 dark:border-gray-600'>
-                    <h2 className='my-4 font-bold text-lg dark:text-white'>Add New Products</h2>
-                    {infoLoading ?
-                        <button disabled onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
+                <div className='flex justify-between items-center gap-4'>
+                    <h2 className='my-4 font-bold text-xl text-[#151515] dark:text-white'>Add New Products</h2>
+                    {loading ?
+                        <button
+                            disabled
+                            className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
                             Cancel
                         </button>
                         :
-                        <button onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
+                        <button
+                            onClick={() => window.history.back()}
+                            className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
                             Cancel
                         </button>
                     }
                 </div>
+
+                <div className="divider before:bg-[#151515] after:bg-[#151515] dark:before:bg-white dark:after:bg-white my-1"></div>
+
                 <div className="w-full overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 mt-5 mb-8">
                     <div>
                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -90,8 +144,8 @@ const AddProduct = () => {
                                                         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" className="text-3xl text-green-500" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path><polyline points="16 16 12 12 8 16"></polyline>
                                                         </svg>
                                                     </span>
-                                                    <p className="text-sm mt-2 dark:text-gray-100">Drag your image here</p>
-                                                    <em className="text-xs text-gray-400 dark:text-gray-300">(Only *.jpeg and *.png images will be accepted)</em>
+                                                    <p className="text-sm mt-2 text-[#151515] dark:text-gray-300">Drag your image here</p>
+                                                    <em className="text-xs text-gray-500 dark:text-gray-300">(Only *.jpeg and *.png images will be accepted)</em>
                                                     <input {...register("image", { required: "* This field must have some value!!" })} onChange={e => PreviewImg(e)} className='image-upload-btn hidden' type="file" id='image-upload-btn' accept="image/*" />
                                                 </div>
                                             </label>
@@ -107,28 +161,28 @@ const AddProduct = () => {
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">2. Product SKU</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <input  {...register("sku", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" type="text" placeholder="Product SKU" />
+                                        <input {...register("sku", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" type="text" placeholder="Product SKU" />
                                         {errors.sku && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.sku.message}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">3. Product Title/Name</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <input {...register("title", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" type="text" placeholder="Product title" />
+                                        <input {...register("title", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" type="text" placeholder="Product title" />
                                         {errors.title && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.title.message}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">4. Product Slug</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <input {...register("slug", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" type="text" placeholder="Product slug" />
+                                        <input {...register("slug", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" type="text" placeholder="Product slug" />
                                         {errors.slug && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.slug.message}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">5. Product Description</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <textarea {...register("description", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" placeholder="Product details" rows="4" spellCheck="false">
+                                        <textarea {...register("description", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" placeholder="Product details" rows="4" spellCheck="false">
                                         </textarea>
                                         {errors.description && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.description.message}</p>}
                                     </div>
@@ -136,7 +190,7 @@ const AddProduct = () => {
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">6. Parent Category</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <select {...register("parent", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0">
+                                        <select {...register("parent", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0">
                                             <option value="" hidden>Select parent category</option>
                                             <option value="Fish &amp; Meat">Fish &amp; Meat</option>
                                             <option value="Fruits &amp; Vegetable">Fruits &amp; Vegetable</option>
@@ -163,7 +217,7 @@ const AddProduct = () => {
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">7. Child Category</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <select {...register("children", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0">
+                                        <select {...register("children", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0">
                                             <option value="" hidden>Select child category</option>
                                             <option value="Fish">Fish</option>
                                             <option value="Meat">Meat</option>
@@ -222,7 +276,7 @@ const AddProduct = () => {
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">8. Product Type</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <select {...register("type", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0">
+                                        <select {...register("type", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0">
                                             <option value="" hidden>Select type</option>
                                             <option value="Grocery">Grocery</option>
                                             <option value="Foods">Foods</option>
@@ -242,54 +296,77 @@ const AddProduct = () => {
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">9. Unit (kg/pc/lb/ml/g...etc)</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <input {...register("unit", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" type="text" placeholder="Unit" />
+                                        <input {...register("unit", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" type="text" placeholder="Unit" />
                                         {errors.unit && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.unit.message}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-sm text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium">10. Product Quantity</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <input {...register("quantity", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" type="number" placeholder="Quantity" />
+                                        <input {...register("quantity", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" type="number" placeholder="Quantity" />
                                         {errors.quantity && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.quantity.message}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">11. Product Price</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <input {...register("originalPrice", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" type="number" placeholder="Price" />
+                                        <input {...register("originalPrice", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" type="number" placeholder="Price" />
                                         {errors.originalPrice && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.originalPrice.message}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">12. Sale Price</label>
                                     <div className="col-span-8 sm:col-span-4">
-                                        <input {...register("price", { required: "* This field must have some value!!" })} className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0" type="number" placeholder="Sale price" />
+                                        <input {...register("price", { required: "* This field must have some value!!" })} className="w-full p-3 text-base rounded-md border border-[#151515] dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-800 text-[#151515] dark:text-white outline-0" type="number" placeholder="Sale price" />
                                         {errors.price && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.price.message}</p>}
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">13. Product Tag</label>
-                                    <div className="col-span-8 sm:col-span-4">
+                                    <div ref={parentRef} onClick={() => focusInput()} className="col-span-8 sm:col-span-4">
                                         <TagsInput
                                             value={tags}
                                             onChange={setTags}
-                                            className="block w-full px-3 py-1 text-sm rounded-md border border-gray-200 dark:border-gray-500 dark:focus:border-gray-100 h-12 bg-gray-100 dark:bg-gray-800 dark:text-white focus:bg-white outline-0"
-                                            placeholder="Child category  (Write then press enter to add new child category )"
+                                            onExisting={() => { toast.error("Tag Already Exist!!", { position: "top-center", autoClose: 1500 }) }}
+                                            disableBackspaceRemove
+                                            placeHolder="Write & press enter to add"
                                         />
                                     </div>
                                 </div>
+                                <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
+                                    <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">14. Flash Sale</label>
+                                    <div className="col-span-8 sm:col-span-4">
+                                        <fieldset className="flex items-center gap-6 border px-4 py-2 rounded-lg text-[#151515] dark:text-white">
+                                            <legend className="px-2 italic">Flash Sale</legend>
+                                            <label htmlFor="flashSale">
+                                                <span className="pr-4">Yes</span>
+                                                <input
+                                                    {...register("flashSale", { required: "* This field must have some value!!" })}
+                                                    className="outline-0 border-0"
+                                                    type="radio"
+                                                    name="flashSale"
+                                                    id="flashSale"
+                                                    value={true}
+                                                />
+                                            </label>
+                                            <label htmlFor="flashSale">
+                                                <span className="pr-4">No</span>
+                                                <input
+                                                    {...register("flashSale", { required: "* This field must have some value!!" })}
+                                                    className="outline-0 border-0"
+                                                    type="radio"
+                                                    name="flashSale"
+                                                    id="flashSale"
+                                                    value={false}
+                                                />
+                                            </label>
+                                        </fieldset>
+                                        {errors.flashSale && <p className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.flashSale.message}</p>}
+                                    </div>
+                                </div>
                                 <div className="my-5 md:my-10 sm:text-right">
-                                    {/* {infoLoading ?
-                                        <button disabled onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
-                                            Cancel
-                                        </button>
-                                        :
-                                        <button onClick={() => window.history.back()} className="font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-gray-200 text-red-500 hover:bg-red-200 hover:border-red-300 hover:text-red-600 transition-colors duration-500">
-                                            Cancel
-                                        </button>
-                                    } */}
-                                    {infoLoading ?
-                                        <button disabled className="inline-flex font-medium outline-0 px-4 py-2 text-sm rounded-lg border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 transition-colors duration-500 ml-4">
+                                    {loading ?
+                                        <button disabled className="inline-flex justify-center items-center gap-2 font-medium outline-0 px-6 py-2 text-lg rounded-md border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 duration-500">
                                             + Add
                                             <svg className="ml-2 h-5 w-5 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -297,7 +374,7 @@ const AddProduct = () => {
                                             </svg>
                                         </button>
                                         :
-                                        <button className="w-full sm:w-fit items-center font-medium outline-0 px-4 sm:py-2 py-3 text-sm rounded-md md:rounded-lg border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 transition-colors duration-500 md:ml-4" type="submit">
+                                        <button className="w-full sm:w-fit items-center font-medium outline-0 px-6 py-2 text-lg rounded-md border border-green-500 bg-green-500 text-white hover:bg-green-600 hover:border-green-600 duration-500" type="submit">
                                             + Add
                                         </button>
                                     }

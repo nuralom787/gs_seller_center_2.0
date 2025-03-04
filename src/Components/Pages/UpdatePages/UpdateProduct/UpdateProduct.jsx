@@ -87,11 +87,10 @@ const UpdateProduct = () => {
         formData.quantity = formData.quantity ? formData.quantity : quantity;
         formData.originalPrice = formData.originalPrice ? formData.originalPrice : originalPrice;
         formData.price = formData.price ? formData.price : price;
-        formData.tag = tags;
+        formData.tag = tags.length ? tags : tag;
         formData.flashSale = formData.flashSale ? formData.flashSale : flashSale;
 
         // console.log(formData);
-
 
         Swal.fire({
             title: "Are you sure?",
@@ -406,7 +405,9 @@ const UpdateProduct = () => {
                                             <TagsInput
                                                 value={tags ? tags : []}
                                                 onChange={setTags}
-                                                placeholder="Child category  (Write then press enter to add new child category )"
+                                                onExisting={() => { toast.error("Tag Already Exist!!", { position: "top-center", autoClose: 1500 }) }}
+                                                disableBackspaceRemove
+                                                placeHolder="Write & press enter to add"
                                             />
                                         </div>
                                     </div>
