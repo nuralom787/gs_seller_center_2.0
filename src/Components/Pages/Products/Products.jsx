@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { NavLink } from "react-router";
 import useProducts from "../../Hooks/useProducts";
@@ -12,18 +11,40 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
+import empty from '../../../assets/Images/empty.svg';
+import { useState } from "react";
 
 
 const Products = () => {
+    const [products, refetch, isPending, itemPerPage, setCurrentPage, perPageItem] = useProducts();
     const axiosSecure = useAxiosSecure();
     const { register, handleSubmit } = useForm();
-    const [products, refetch, isPending, itemPerPage, setCurrentPage, perPageItem] = useProducts();
-
     const totalPages = Math.ceil(products?.count / itemPerPage);
+    const [search, setSearch] = useState(false);
+
 
     // Search Product By Name/Title.
     const onSubmit = (data) => {
+        setSearch(true);
         console.log(data)
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setSearch(false);
+                Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                });
+            }
+        });
     };
 
 
@@ -45,8 +66,6 @@ const Products = () => {
 
     // Delete Product Function.
     const deleteProduct = (product) => {
-        console.log("delete function call for: ", product._id);
-
         Swal.fire({
             title: "Are you sure?",
             html: `
@@ -62,7 +81,7 @@ const Products = () => {
 
                 // Call Delete Api.
                 const deleteRes = await axiosSecure.delete(`/product/delete/${product._id}`);
-                console.log(deleteRes);
+                // console.log(deleteRes);
 
                 if (deleteRes.data.deletedCount > 0) {
                     refetch();
@@ -84,6 +103,8 @@ const Products = () => {
         return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${sizes[i]}`;
     };
 
+
+    // Handle Pagination Page Click Function.
     const handlePageClick = (event) => {
         setCurrentPage(event.selected + 1);
     };
@@ -95,18 +116,20 @@ const Products = () => {
             <div className='px-6 font-sans'>
                 <h2 className='my-4 font-bold text-lg text-[#151515] dark:text-white'>Products</h2>
                 <div className='mb-6'>
-                    <div className='bg-white dark:bg-gray-800 py-2 px-4 my-4 rounded-md border border-gray-200 dark:border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center'>
-                        <form onSubmit={handleSubmit(onSubmit)} className='bg-white dark:bg-gray-800 flex items-center justify-between'>
-                            <input
-                                {...register("search")}
-                                className='w-full border border-gray-300 dark:border-gray-500 focus:border-gray-500 dark:focus:border-gray-100 bg-gray-200 dark:bg-gray-800 text-[#151515] dark:text-white px-3 py-3 rounded my-4 outline-0'
-                                type="search"
-                                placeholder='Search by Product Name' />
-                            {/* {search &&
-                                <svg className="ml-2 mr-4 h-6 w-6 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="green" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="green" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg> */}
-                            {/* } */}
+                    <div className='bg-white dark:bg-gray-800 py-6 px-4 my-4 rounded-md border border-gray-200 dark:border-gray-800 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-center'>
+                        <form onSubmit={handleSubmit(onSubmit)} className='bg-white dark:bg-gray-800'>
+                            <div className="flex items-center gap-2 border border-gray-300 dark:border-gray-500 focus:border-gray-500 dark:focus:border-gray-100 bg-gray-200 dark:bg-gray-800 rounded-md">
+                                <input
+                                    {...register("search")}
+                                    className='w-full border-0 text-[#151515] dark:text-white p-3 outline-0 placeholder:text-[#151515] dark:placeholder:text-gray-100'
+                                    type="search"
+                                    placeholder='Search by Product Name' />
+                                {search &&
+                                    <svg className="ml-2 mr-4 h-6 w-6 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="green" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="green" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                }
+                            </div>
                         </form>
                         <div className=''>
                             <select
@@ -268,20 +291,20 @@ const Products = () => {
                                         pageRangeDisplayed={3}
                                         onPageChange={handlePageClick}
                                         containerClassName={"flex space-x-2 cursor-pointer"}
-                                        pageClassName={"px-3 py-1 bg-gray-900 hover:bg-base-100 duration-300 font-bold rounded"}
-                                        activeClassName={"bg-green-600 hover:bg-green-600 transition-discrete font-bold text-white"}
-                                        previousClassName={"p-2 text-lg text-[#151515] dark:text-white hover:bg-base-100 duration-300 rounded"}
-                                        nextClassName={"p-2 text-lg text-[#151515] dark:text-white hover:bg-base-100 duration-300 rounded"}
-                                        breakClassName={"px-3 py-1"}
+                                        pageClassName={"px-3 py-1 text-[#151515] dark:text-white hover:text-white dark:bg-gray-900 hover:bg-green-600 dark:hover:bg-base-100 duration-300 font-bold rounded"}
+                                        activeClassName={"bg-green-600 dark:bg-green-600 dark:hover:bg-green-600 transition-discrete font-bold text-white"}
+                                        previousClassName={"p-2 text-lg text-[#151515] hover:text-white dark:text-white hover:bg-green-600 duration-300 rounded"}
+                                        nextClassName={"p-2 text-lg text-[#151515] hover:text-white dark:text-white hover:bg-green-600 duration-300 rounded"}
+                                        breakClassName={"px-3 py-1 text-[#151515] dark:text-white"}
                                     />
                                 </div>
                             </div>
                             :
-                            <div className='text-center my-16'>
+                            <div className='text-center my-32'>
                                 <div className='w-full'>
-                                    {/* <img className='w-2/5 mx-auto' src={empty} alt="" /> */}
+                                    <img className='w-32 mx-auto' src={empty} alt="" />
                                 </div>
-                                <p className='inline-flex items-center gap-2 pt-4 text-black dark:text-white font-sans text-3xl font-semibold'>
+                                <p className='inline-flex items-center gap-2 pt-4 text-green-600 font-sans text-3xl font-semibold'>
                                     No Product Found!!
                                     <PiSmileySadBold />
                                 </p>

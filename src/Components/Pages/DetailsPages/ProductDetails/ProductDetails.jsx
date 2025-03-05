@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { NavLink, useParams } from "react-router";
 import useProducts from "../../../Hooks/useProducts";
 import { ScaleLoader } from "react-spinners";
+import useProduct from "../../../Hooks/useProduct";
 
 const ProductDetails = () => {
     const { id } = useParams();
-    const [products, refetch, isPending] = useProducts();
-    const product = products?.products.find(item => item._id === id);
+    const [product, refetch, isPending] = useProduct(id);
+    // console.log(product);
 
 
     return (
