@@ -18,62 +18,80 @@ const Navigation = () => {
                 <img className='w-10' src={logoImg} alt="" />
                 <h4 className='text-2xl font-bold font-sans text-[#151515] dark:text-white py-5'>GS Seller</h4>
             </div>
+
             <div className="divider mx-2 my-0 before:bg-[#151515] after:bg-[#151515] dark:before:bg-white dark:after:bg-white"></div>
+
             <ul className='font-sans pb-20'>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/">
-                        {/* <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/"
+                    >
                         <LuLayoutDashboard />
                         <p className='px-3'>Dashboard</p>
                     </NavLink>
                 </li>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/products">
-                        {/* <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/products"
+                    >
                         <RiShoppingBag3Line />
                         <p className='px-3'>Products</p>
                     </NavLink>
                 </li>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/category">
-                        {/* <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/categories"
+                    >
                         <FaList />
-                        <p className='px-3'>Category</p>
+                        <p className='px-3'>Categories</p>
                     </NavLink>
                 </li>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/customers">
-                        {/* <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/customers"
+                    >
                         <FaUserGroup />
                         <p className='px-3'>Customers</p>
                     </NavLink>
                 </li>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/orders">
-                        {/* <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/orders"
+                    >
                         <FaRegCompass />
                         <p className='px-3'>Orders</p>
                     </NavLink>
                 </li>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/coupons">
-                        {/* <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/coupons"
+                    >
                         <FaGift />
-                        <p className='px-3'>Coupon</p>
+                        <p className='px-3'>Coupons</p>
                     </NavLink>
                 </li>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/our-staff">
-                        {/* && <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/our-staffs"
+                    >
                         <FaRegUser />
-                        <p className='px-3'>Our Staff</p>
+                        <p className='px-3'>Our Staffs</p>
                     </NavLink>
                 </li>
                 <li className=''>
-                    <NavLink className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase" to="/setting">
-                        {/* <span className="absolute inset-y-0 left-0 w-1 bg-green-500 rounded-tr-lg rounded-br-lg" aria-hidden="true"></span> */}
+                    <NavLink
+                        className="px-6 py-4 flex items-center w-full text-lg font-semibold text-gray-500 dark:text-white hover:text-green-600 dark:hover:text-green-600 uppercase"
+                        to="/settings"
+                    >
                         <FiSettings />
-                        <p className='px-3'>Setting</p>
+                        <p className='px-3'>Settings</p>
                     </NavLink>
                 </li>
             </ul>

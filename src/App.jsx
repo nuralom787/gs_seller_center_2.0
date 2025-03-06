@@ -10,6 +10,7 @@ import UpdateProduct from './Components/Pages/UpdatePages/UpdateProduct/UpdatePr
 import { ToastContainer } from 'react-toastify'
 import ProductDetails from './Components/Pages/DetailsPages/ProductDetails/ProductDetails'
 import AddProduct from './Components/Pages/AddPages/AddProduct/AddProduct'
+import Categories from './Components/Pages/Categories/Categories'
 
 function App() {
   const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ function App() {
           <Route path="/" element={<Main />}>
             <Route path='/' element={<DashboardHome />} />
             <Route path='/products' element={<Products />} />
+            <Route path='/categories' element={<Categories />} />
             <Route path='/orders' element={<Orders />} />
             <Route path='/products/add-product' element={<AddProduct />} />
             <Route path='/products/details/:id' element={<ProductDetails />} />
