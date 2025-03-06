@@ -43,7 +43,6 @@ const AddCategory = () => {
 
 
         if (tags.length) {
-            console.log(formData);
             Swal.fire({
                 title: "Are you sure?",
                 text: "You want to add this Category!",
