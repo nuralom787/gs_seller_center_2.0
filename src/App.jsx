@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify'
 import ProductDetails from './Components/Pages/DetailsPages/ProductDetails/ProductDetails'
 import AddProduct from './Components/Pages/AddPages/AddProduct/AddProduct'
 import Categories from './Components/Pages/Categories/Categories'
+import AddCategory from './Components/Pages/AddPages/AddCategory/AddCategory'
 
 function App() {
   const queryClient = new QueryClient();
@@ -41,6 +42,9 @@ function App() {
             <Route path='/products/add-product' element={<AddProduct />} />
             <Route path='/products/details/:id' element={<ProductDetails />} />
             <Route path='/products/update/:id' element={<UpdateProduct />} />
+            <Route path='/categories/add-category' element={<AddCategory />} />
+            <Route path='/categories/details/:id' element={<UpdateProduct />} />
+            <Route path='/categories/update/:id' element={<UpdateProduct />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -6,12 +6,14 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useProducts from "../../../Hooks/useProducts";
+import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const AddProduct = () => {
     const [, refetch] = useProducts();
     const axiosSecure = useAxiosSecure();
+    const axiosPublic = useAxiosPublic();
     const navigate = useNavigate();
     const parentRef = useRef(null);
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -53,7 +55,7 @@ const AddProduct = () => {
 
                     // Upload Image in ImageBB and Get Image URL.
                     const imageFile = { image: formData.image };
-                    const res = await axiosSecure.post(image_hosting_api, imageFile, {
+                    const res = await axiosPublic.post(image_hosting_api, imageFile, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }

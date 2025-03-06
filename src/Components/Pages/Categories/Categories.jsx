@@ -184,7 +184,7 @@ const Categories = () => {
                                                     <td className='px-2 py-3 text-sm'>
                                                         <div className="flex items-center justify-center">
                                                             <NavLink
-                                                                to={`/up-category/${category._id}`}
+                                                                to={`/categories/update/${category._id}`}
                                                                 className="p-2 cursor-pointer text-gray-400 hover:text-green-600"
                                                                 data-tooltip-id="my-tooltip"
                                                                 data-tooltip-content="Edit"
