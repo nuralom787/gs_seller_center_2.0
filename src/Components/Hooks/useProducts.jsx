@@ -18,7 +18,7 @@ const useProducts = () => {
     const { data: products, isPending, refetch } = useQuery({
         queryKey: ["products", itemPerPage, currentPage],
         queryFn: async () => {
-            const res = await axiosPublic.get(`http://localhost:5000/products?size=${itemPerPage}&page=${currentPage - 1}&category=${category}&title=${title}&price=${price}`);
+            const res = await axiosPublic.get(`/products?size=${itemPerPage}&page=${currentPage - 1}&category=${category}&title=${title}&price=${price}`);
             return res.data;
         },
         placeholderData: keepPreviousData,
