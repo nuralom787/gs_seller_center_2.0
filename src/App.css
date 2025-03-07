@@ -1,7 +1,10 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/*--------------------------- For Dark Mode -------------------------------*/
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 @custom-variant dark (&:where(.dark, .dark *));
+
 
 .dark {
     background-color: #151515;
