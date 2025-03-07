@@ -9,7 +9,7 @@ const useCategories = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
 
-    const { data: categories, isPending, refetch } = useQuery({
+    const { data: categories, refetch, isPending, isError } = useQuery({
         queryKey: ["categories", itemPerPage, currentPage, search],
         queryFn: async () => {
             const res = await axiosPublic.get(`/categories?page=${currentPage - 1}&size=${itemPerPage}&search=${search}`)
@@ -18,7 +18,7 @@ const useCategories = () => {
         placeholderData: keepPreviousData,
     });
 
-    return [categories, refetch, isPending, itemPerPage, setItemPerPage, setCurrentPage, setSearch];
+    return [categories, refetch, isPending, isError, itemPerPage, setItemPerPage, setCurrentPage, setSearch];
 };
 
 export default useCategories;
