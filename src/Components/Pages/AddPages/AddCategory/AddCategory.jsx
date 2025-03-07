@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { TagsInput } from "react-tag-input-component";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
 import useCategories from "../../../Hooks/useCategories";
+import ReactTags from "react-tag-autocomplete";
+import './AddCategory.css';
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
@@ -39,8 +40,8 @@ const AddCategory = () => {
     const onSubmit = formData => {
         formData.icon = newImg;
         formData.status = "Show";
-        formData.children = tags;
-
+        const capitalizedTags = tags.map(tag => ({ ...tag, name: tag.name.charAt(0).toUpperCase() + tag.name.slice(1) }));
+        formData.children = capitalizedTags.map(tag => tag.name);
 
         if (tags.length) {
             Swal.fire({
@@ -101,20 +102,27 @@ const AddCategory = () => {
                 position: "top-center",
                 autoClose: 2500
             })
-            focusInput();
+            // focusInput();
         }
     };
 
 
-
     // Handle Input Focusing By On Click.
-    const focusInput = () => {
-        const input = parentRef.current?.querySelector("input");
-        if (input) {
-            input.focus()
-        };
-    }
+    // const focusInput = () => {
+    //     const input = parentRef.current?.querySelector("input");
+    //     if (input) {
+    //         input.focus()
+    //     };
+    // }
 
+
+    const onDelete = tagIndex => {
+        setTags(tags.filter((_, i) => i !== tagIndex))
+    };
+
+    const onAddition = newTag => {
+        setTags([...tags, newTag])
+    };
 
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
@@ -196,13 +204,14 @@ const AddCategory = () => {
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-sm text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium">Child Category</label>
-                                    <div ref={parentRef} onClick={() => focusInput()} className="col-span-8 sm:col-span-4">
-                                        <TagsInput
-                                            value={tags}
-                                            onChange={setTags}
-                                            onExisting={() => { toast.error("Tag Already Exist!!", { position: "top-center", autoClose: 1500 }) }}
-                                            disableBackspaceRemove
-                                            placeHolder="Write & press enter to add"
+                                    <div className="col-span-8 sm:col-span-4">
+                                        <ReactTags
+                                            allowNew
+                                            tags={tags}
+                                            onDelete={onDelete}
+                                            onAddition={onAddition}
+                                            placeholderText="Write & press enter to add new Tag"
+                                            allowBackspace={false}
                                         />
                                     </div>
                                 </div>

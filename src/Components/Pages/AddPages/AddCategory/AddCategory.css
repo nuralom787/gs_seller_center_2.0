@@ -1,38 +1,16 @@
-@import "tailwindcss";
-@plugin "daisyui";
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-@custom-variant dark (&:where(.dark, .dark *));
-
-.dark {
-    background-color: #151515;
-}
-
-.light {
-    background-color: white;
-}
-
-
-
-/* -------------------------------------------------------------------
-                    Tag Input Related Styles.
---------------------------------------------------------------------*/
-
-
-
-.react-tags {
+/* .react-tags {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 5px;
     border-radius: 4px;
 }
 
 .react-tags__selected {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
@@ -61,4 +39,4 @@
     width: auto;
     outline: none;
     border: none;
-}
+} */

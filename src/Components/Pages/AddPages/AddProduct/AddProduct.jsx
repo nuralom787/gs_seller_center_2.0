@@ -1,12 +1,12 @@
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
-import { TagsInput } from "react-tag-input-component";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useProducts from "../../../Hooks/useProducts";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import ReactTags from "react-tag-autocomplete";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
@@ -37,7 +37,8 @@ const AddProduct = () => {
 
     // Add New Product.
     const onSubmit = formData => {
-        formData.tag = tags;
+        const capitalizedTags = tags.map(tag => ({ ...tag, name: tag.name.charAt(0).toUpperCase() + tag.name.slice(1) }));
+        formData.tag = capitalizedTags.map(tag => tag.name);;
         formData.image = newImg;
 
         if (tags.length) {
@@ -96,19 +97,27 @@ const AddProduct = () => {
                 position: "top-center",
                 autoClose: 2500
             })
-            focusInput();
+            // focusInput();
         }
     };
 
 
     // Handle Input Focusing By On Click.
-    const focusInput = () => {
-        const input = parentRef.current?.querySelector("input");
-        if (input) {
-            input.focus()
-        };
-    }
+    // const focusInput = () => {
+    //     const input = parentRef.current?.querySelector("input");
+    //     if (input) {
+    //         input.focus()
+    //     };
+    // }
 
+
+    const onDelete = tagIndex => {
+        setTags(tags.filter((_, i) => i !== tagIndex))
+    };
+
+    const onAddition = newTag => {
+        setTags([...tags, newTag])
+    };
 
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
@@ -325,13 +334,14 @@ const AddProduct = () => {
                                 </div>
                                 <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                     <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">13. Product Tag</label>
-                                    <div ref={parentRef} onClick={() => focusInput()} className="col-span-8 sm:col-span-4">
-                                        <TagsInput
-                                            value={tags}
-                                            onChange={setTags}
-                                            onExisting={() => { toast.error("Tag Already Exist!!", { position: "top-center", autoClose: 1500 }) }}
-                                            disableBackspaceRemove
-                                            placeHolder="Write & press enter to add"
+                                    <div className="col-span-8 sm:col-span-4">
+                                        <ReactTags
+                                            allowNew
+                                            tags={tags}
+                                            onDelete={onDelete}
+                                            onAddition={onAddition}
+                                            placeholderText="Write & press enter to add new Tag"
+                                            allowBackspace={false}
                                         />
                                     </div>
                                 </div>

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router";
-import { TagsInput } from 'react-tag-input-component';
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import './UpdateProduct.css';
@@ -11,6 +10,7 @@ import useProducts from "../../../Hooks/useProducts";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import useProduct from "../../../Hooks/useProduct";
 import { ScaleLoader } from "react-spinners";
+import ReactTags from "react-tag-autocomplete";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
@@ -61,10 +61,10 @@ const UpdateProduct = () => {
         formData.quantity = formData.quantity ? formData.quantity : product?.quantity;
         formData.originalPrice = formData.originalPrice ? formData.originalPrice : product?.originalPrice;
         formData.price = formData.price ? formData.price : product?.price;
-        formData.tag = tags.length ? tags : product?.tag;
         formData.flashSale = formData.flashSale ? formData.flashSale : product?.flashSale;
 
-        // console.log(formData);
+        const capitalizedTags = tags.map(tag => ({ ...tag, name: tag.name.charAt(0).toUpperCase() + tag.name.slice(1) }));
+        formData.tag = tags.length ? capitalizedTags.map(tag => tag.name) : product?.tag;
 
         Swal.fire({
             title: "Are you sure?",
@@ -134,12 +134,31 @@ const UpdateProduct = () => {
     };
 
     // Handle Input Focusing By On Click.
-    const focusInput = () => {
-        const input = parentRef.current?.querySelector("input");
-        if (input) {
-            input.focus()
-        };
-    }
+    // const focusInput = () => {
+    //     const input = parentRef.current?.querySelector("input");
+    //     if (input) {
+    //         input.focus()
+    //     };
+    // }
+
+
+    // Load and Set Default Tags.
+    useEffect(() => {
+        if (product) {
+            const formattedTag = product.tag?.map((name, idx) => ({ id: idx, name: name }));
+            setTags(formattedTag)
+        }
+    }, [product])
+
+    const onDelete = tagIndex => {
+        setTags(tags.filter((_, i) => i !== tagIndex))
+    };
+
+    const onAddition = newTag => {
+        setTags([...tags, newTag])
+    };
+
+
 
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
@@ -389,13 +408,14 @@ const UpdateProduct = () => {
                                             </div>
                                             <div className="grid grid-cols-6 gap-3 md:gap-5 xl:gap-6 lg:gap-6 mb-6">
                                                 <label className="block text-gray-700 dark:text-gray-400 col-span-4 sm:col-span-2 font-medium text-sm">13. Product Tag</label>
-                                                {product?.tag && <div ref={parentRef} onClick={() => focusInput()} className="col-span-8 sm:col-span-4">
-                                                    <TagsInput
-                                                        value={product?.tag}
-                                                        onChange={setTags}
-                                                        onExisting={() => { toast.error("Tag Already Exist!!", { position: "top-center", autoClose: 1500 }) }}
-                                                        disableBackspaceRemove
-                                                        placeHolder="Write & press enter to add"
+                                                {product?.tag && <div className="col-span-8 sm:col-span-4">
+                                                    <ReactTags
+                                                        allowNew
+                                                        tags={tags}
+                                                        onDelete={onDelete}
+                                                        onAddition={onAddition}
+                                                        placeholderText="Write & press enter to add new Tag"
+                                                        allowBackspace={false}
                                                     />
                                                 </div>}
                                             </div>
