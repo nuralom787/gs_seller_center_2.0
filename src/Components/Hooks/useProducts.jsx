@@ -6,17 +6,36 @@ const useProducts = () => {
     const axiosPublic = useAxiosPublic();
     const [itemPerPage, setItemPerPage] = useState(15);
     const [currentPage, setCurrentPage] = useState(1);
-    const [title, setTitle] = useState(null);
-    const [category, setCategory] = useState(null);
-    const [price, setPrice] = useState(null);
+    const [title, setTitle] = useState('');
+    const [category, setCategory] = useState('');
+    const [price, setPrice] = useState('');
 
     const perPageItem = (e) => {
         setItemPerPage(e.target.value);
         setCurrentPage(1)
     };
 
+    const handleSearch = (text) => {
+        setTitle(text)
+        setCurrentPage(1);
+    };
+
+
+    const handleCategory = (value) => {
+        setCategory(value)
+        setCurrentPage(1);
+    };
+
+
+    const handlePrice = (value) => {
+        setPrice(value)
+        setCurrentPage(1);
+    };
+
+
+
     const { data: products, isPending, refetch, isError } = useQuery({
-        queryKey: ["products", itemPerPage, currentPage],
+        queryKey: ["products", itemPerPage, currentPage, title, category, price],
         queryFn: async () => {
             const res = await axiosPublic.get(`/products?size=${itemPerPage}&page=${currentPage - 1}&category=${category}&title=${title}&price=${price}`);
             return res.data;
@@ -24,7 +43,7 @@ const useProducts = () => {
         placeholderData: keepPreviousData,
     });
 
-    return [products, refetch, isPending, isError, itemPerPage, setCurrentPage, perPageItem];
+    return [products, refetch, isPending, isError, itemPerPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice];
 };
 
 export default useProducts;

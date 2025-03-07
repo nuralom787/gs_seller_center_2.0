@@ -16,7 +16,7 @@ import { useState } from "react";
 
 
 const Products = () => {
-    const [products, refetch, isPending, isError, itemPerPage, setCurrentPage, perPageItem] = useProducts();
+    const [products, refetch, isPending, isError, itemPerPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice] = useProducts();
     const axiosSecure = useAxiosSecure();
     const { register, handleSubmit } = useForm();
     const totalPages = Math.ceil(products?.count / itemPerPage);
@@ -25,26 +25,27 @@ const Products = () => {
 
     // Search Product By Name/Title.
     const onSubmit = (data) => {
-        setSearch(true);
+        // setSearch(true);
+        handleSearch(data.search)
         console.log(data)
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                setSearch(false);
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                });
-            }
-        });
+        // Swal.fire({
+        //     title: "Are you sure?",
+        //     text: "You won't be able to revert this!",
+        //     icon: "warning",
+        //     showCancelButton: true,
+        //     confirmButtonColor: "#3085d6",
+        //     cancelButtonColor: "#d33",
+        //     confirmButtonText: "Yes, delete it!"
+        // }).then((result) => {
+        //     if (result.isConfirmed) {
+        //         setSearch(false);
+        //         Swal.fire({
+        //             title: "Deleted!",
+        //             text: "Your file has been deleted.",
+        //             icon: "success"
+        //         });
+        //     }
+        // });
     };
 
 
@@ -133,13 +134,13 @@ const Products = () => {
                         </form>
                         <div className=''>
                             <select
-                                onChange={(e) => setCategory(e.target.value)}
+                                onChange={(e) => handleCategory(e.target.value)}
                                 className='w-full bg-gray-200 dark:bg-gray-800 text-[#151515] dark:text-white p-3 border border-gray-300 dark:border-gray-500 dark:focus:border-gray-100 outline-0 rounded-md'
                                 name=""
                                 id="">
-                                <option value="All" hidden>Category</option>
-                                <option value="All" >Category</option>
-                                <option value="All" >Category</option>
+                                <option value="">Category</option>
+                                <option value="Fruits & Vegetable">Fruits & Vegetable</option>
+                                <option value="Baby Care">Baby Care</option>
                                 {/* {
                                     categories.map(category => <option key={category.parent}>{category.parent}</option>)
                                 } */}
@@ -147,13 +148,13 @@ const Products = () => {
                         </div>
                         <div className=''>
                             <select
-                                // onChange={(e) => sortByPrice(e.target.value)}
+                                onChange={(e) => handlePrice(e.target.value)}
                                 className='w-full bg-gray-200 dark:bg-gray-800 text-[#151515] dark:text-white p-3 border border-gray-300 dark:border-gray-500 dark:focus:border-gray-100 outline-0 rounded-md'
                                 name=""
                                 id="">
-                                <option value="All" hidden>Price</option>
-                                <option value="Low">Low To High</option>
-                                <option value="High">High To Low</option>
+                                <option value="">Price</option>
+                                <option value="asc">Low To High</option>
+                                <option value="desc">High To Low</option>
                             </select>
                         </div>
                         <NavLink to="/products/add-product" className='bg-green-500 hover:bg-green-600 duration-500 text-white text-center py-3 rounded-md'>
@@ -186,8 +187,9 @@ const Products = () => {
                                                 <thead className="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                                     <tr>
                                                         <td className="px-3 py-3">SKU</td>
-                                                        <td className="px-3 py-3">Image</td>
-                                                        <td className="px-3 py-3">PRODUCT NAME</td>
+                                                        <td className="px-3 py-3">IMAGE</td>
+                                                        <td className="px-3 py-3">NAME</td>
+                                                        <td className="px-3 py-3">CATEGORY</td>
                                                         <td className="px-3 py-3">PRICE</td>
                                                         <td className="px-3 py-3">STOCK</td>
                                                         <td className="px-3 py-3">STATUS</td>
@@ -209,6 +211,9 @@ const Products = () => {
                                                             <td className='px-3 py-3 text-sm whitespace-nowrap'>
                                                                 {product.title}
                                                             </td>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                                {product.parent}
+                                                            </td>
                                                             <td className='px-3 py-3 text-sm font-bold whitespace-nowrap'>
                                                                 ${product.price.toFixed(2)}
                                                             </td>
@@ -224,7 +229,7 @@ const Products = () => {
                                                             </td>
                                                             <td className='px-3 py-3 text-sm font-bold whitespace-nowrap'>
                                                                 {product.discount > 0 &&
-                                                                    <span>{Math.ceil(product.discount)}% OFF </span>
+                                                                    <span>{Math.ceil(product.discount)}% OFF</span>
                                                                 }
                                                             </td>
                                                             <td className='px-3 py-3 text-sm whitespace-nowrap'>
@@ -264,7 +269,7 @@ const Products = () => {
                                                                     </button>
                                                                 }
                                                             </td>
-                                                            <td className='py-3 text-2xl whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
                                                                 <div className="flex justify-center items-center gap-4">
                                                                     <NavLink
                                                                         to={`/products/update/${product._id}`}
@@ -273,7 +278,10 @@ const Products = () => {
                                                                         data-tooltip-content="Edit"
                                                                         data-tooltip-place="bottom"
                                                                     >
-                                                                        <BiSolidEdit />
+                                                                        <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1.2em" width="1.2em" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                                                        </svg>
                                                                     </NavLink>
                                                                     <button
                                                                         onClick={() => deleteProduct(product)}
@@ -282,7 +290,8 @@ const Products = () => {
                                                                         data-tooltip-content="Delete"
                                                                         data-tooltip-place="bottom"
                                                                     >
-                                                                        <FaTrashAlt />
+                                                                        <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1.2em" width="1.2em" xmlns="http://www.w3.org/2000/svg"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
+                                                                        </svg>
                                                                     </button>
                                                                 </div>
                                                             </td>
