@@ -134,7 +134,7 @@ const Categories = () => {
                                                 <thead className="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                                     <tr>
                                                         <td className="px-3 py-3">ID</td>
-                                                        <td className="px-3 py-3">ICON</td>
+                                                        <td className="px-3 py-3 hidden sm:block">ICON</td>
                                                         <td className="px-3 py-3">PARENT</td>
                                                         <td className="px-3 py-3">CHILDREN</td>
                                                         <td className="px-3 py-3">TYPE</td>
@@ -145,13 +145,16 @@ const Categories = () => {
                                                 <tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
                                                     {
                                                         categories?.categories?.map((category, idx) => <tr className='' key={category._id}>
-                                                            <td className='px-3 py-3 text-xs font-bold'>{idx + 1}</td>
-                                                            <td className='px-3 py-3 flex items-center justify-start text-sm'>
-                                                                <img className='w-8 hidden sm:block shadow-inner rounded-full p-1 mr-2' src={category.icon} alt="" />
-                                                                {category.title}
+                                                            <td className='px-3 py-3 text-xs font-bold'>
+                                                                {category._id.slice(20, 24).toUpperCase()}
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm'>{category.parent}</td>
-                                                            <td className='px-3 py-3 text-sm'>
+                                                            <td className='px-3 py-3 hidden sm:flex items-center justify-center text-sm whitespace-nowrap'>
+                                                                <img className='w-8 shadow-inner rounded-full p-1 mr-2' src={category.icon} alt="" />
+                                                            </td>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                                {category.parent}
+                                                            </td>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
                                                                 {
                                                                     category.children.slice(0, 3).map(ct => <span
                                                                         key={ct}
@@ -161,8 +164,10 @@ const Categories = () => {
                                                                     </span>)
                                                                 }
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm'>{category.type}</td>
-                                                            <td className='py-3 px-3 text-sm'>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                                {category.type}
+                                                            </td>
+                                                            <td className='py-3 px-3 text-sm whitespace-nowrap'>
                                                                 {category.status === "Show" ?
                                                                     <button
                                                                         onClick={() => upStatus(category)}
@@ -187,7 +192,7 @@ const Categories = () => {
                                                                     </button>
                                                                 }
                                                             </td>
-                                                            <td className='px-2 py-3 text-sm'>
+                                                            <td className='px-2 py-3 text-sm whitespace-nowrap'>
                                                                 <div className="flex items-center justify-center">
                                                                     <NavLink
                                                                         to={`/categories/update/${category._id}`}

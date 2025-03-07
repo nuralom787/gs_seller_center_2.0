@@ -186,6 +186,7 @@ const Products = () => {
                                                 <thead className="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                                     <tr>
                                                         <td className="px-3 py-3">SKU</td>
+                                                        <td className="px-3 py-3">Image</td>
                                                         <td className="px-3 py-3">PRODUCT NAME</td>
                                                         <td className="px-3 py-3">PRICE</td>
                                                         <td className="px-3 py-3">STOCK</td>
@@ -199,26 +200,34 @@ const Products = () => {
                                                 <tbody className="bg-white divide-y divide-gray-100 dark:divide-gray-700 dark:bg-gray-900 text-gray-700 dark:text-gray-300">
                                                     {
                                                         products.products?.map((product, idx) => <tr className='' key={product._id}>
-                                                            <td className='px-3 py-3 text-xs font-bold text-center'>{idx + 1}</td>
-                                                            <td className='px-3 py-3 flex items-center justify-start'>
-                                                                {product.thumb && <img className='w-12 h-12 hidden sm:block shadow-inner rounded-full p-1 mr-2' src={product.thumb} alt="" />}
+                                                            <td className='px-3 py-3 text-xs font-bold text-center'>
+                                                                {product._id.slice(20, 24).toUpperCase()}
+                                                            </td>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                                {product.thumb && <img className='w-12 shadow-inner rounded-full p-1 mr-2' src={product.thumb} alt="" />}
+                                                            </td>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
                                                                 {product.title}
                                                             </td>
-                                                            <td className='px-3 py-3 font-bold'>${product.price.toFixed(2)}</td>
-                                                            <td className='px-3 py-3 text-center'>{product.quantity < 0 ? 0 : product.quantity}</td>
-                                                            <td className='px-3 py-3'>
+                                                            <td className='px-3 py-3 text-sm font-bold whitespace-nowrap'>
+                                                                ${product.price.toFixed(2)}
+                                                            </td>
+                                                            <td className='px-3 py-3 text-sm text-center whitespace-nowrap'>
+                                                                {product.quantity < 0 ? 0 : product.quantity}
+                                                            </td>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
                                                                 {product.quantity > 0 ?
                                                                     <span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-100">In Stock</span>
                                                                     :
                                                                     <span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-red-500 bg-red-100 dark:text-red-100 dark:bg-red-800">Stock Out</span>
                                                                 }
                                                             </td>
-                                                            <td className='px-3 py-3 font-bold'>
+                                                            <td className='px-3 py-3 text-sm font-bold whitespace-nowrap'>
                                                                 {product.discount > 0 &&
                                                                     <span>{Math.ceil(product.discount)}% OFF </span>
                                                                 }
                                                             </td>
-                                                            <td className='px-3 py-3 text-2xl'>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
                                                                 <NavLink
                                                                     to={`/products/details/${product._id}`}
                                                                     title='Details'
@@ -230,7 +239,7 @@ const Products = () => {
                                                                     <FiZoomIn />
                                                                 </NavLink>
                                                             </td>
-                                                            <td className='px-3 py-3'>
+                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
                                                                 {product.status === "Show" ?
                                                                     <button
                                                                         onClick={() => upStatus(product)}
@@ -255,7 +264,7 @@ const Products = () => {
                                                                     </button>
                                                                 }
                                                             </td>
-                                                            <td className='py-3 text-2xl'>
+                                                            <td className='py-3 text-2xl whitespace-nowrap'>
                                                                 <div className="flex justify-center items-center gap-4">
                                                                     <NavLink
                                                                         to={`/products/update/${product._id}`}
