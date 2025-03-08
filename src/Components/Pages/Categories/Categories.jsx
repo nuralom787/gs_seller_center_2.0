@@ -224,20 +224,6 @@ const Categories = () => {
                                             </table>
                                         </div>
                                         <div className='p-6 mb-10 flex justify-end items-center bg-white dark:bg-gray-900 border border-t-0 border-gray-100 dark:border-gray-700 rounded-b-lg'>
-                                            {/* <div className='text-xs font-bold text-gray-600 dark:text-gray-300'>
-                                        SHOWING {(page * categories.length) + 1}-{(page + 1) * categories.length} OF {totalCategory.length}
-                                    </div> */}
-                                            {/* <div className='text-xs font-bold bg-gray-100 dark:bg-gray-800 rounded'>
-                                        {
-                                            [...Array(pageCount).keys()]
-                                                .map(number => <button
-                                                    key={number}
-                                                    onClick={() => setPage(number)}
-                                                    className={number === page ? 'cursor-pointer px-3 py-2 bg-green-400 text-white border-gray-200 rounded outline-0' : 'cursor-pointer px-3 py-2 border-gray-200 dark:text-gray-200 rounded outline-0'}>
-                                                    {number + 1}
-                                                </button>)
-                                        }
-                                    </div> */}
                                             <ReactPaginate
                                                 previousLabel={<FaArrowLeft />}
                                                 nextLabel={<FaArrowRight />}
