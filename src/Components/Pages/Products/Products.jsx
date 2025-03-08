@@ -13,10 +13,12 @@ import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import empty from '../../../assets/Images/empty.svg';
 import { useState } from "react";
+import useCategories from "../../Hooks/useCategories";
 
 
 const Products = () => {
-    const [products, refetch, isPending, isError, itemPerPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice] = useProducts();
+    const [products, refetch, isPending, isError, itemPerPage, currentPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice] = useProducts();
+    const [categories, , catPending] = useCategories();
     const axiosSecure = useAxiosSecure();
     const { register, handleSubmit } = useForm();
     const totalPages = Math.ceil(products?.count / itemPerPage);
@@ -25,27 +27,7 @@ const Products = () => {
 
     // Search Product By Name/Title.
     const onSubmit = (data) => {
-        // setSearch(true);
         handleSearch(data.search)
-        console.log(data)
-        // Swal.fire({
-        //     title: "Are you sure?",
-        //     text: "You won't be able to revert this!",
-        //     icon: "warning",
-        //     showCancelButton: true,
-        //     confirmButtonColor: "#3085d6",
-        //     cancelButtonColor: "#d33",
-        //     confirmButtonText: "Yes, delete it!"
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         setSearch(false);
-        //         Swal.fire({
-        //             title: "Deleted!",
-        //             text: "Your file has been deleted.",
-        //             icon: "success"
-        //         });
-        //     }
-        // });
     };
 
 
@@ -139,11 +121,14 @@ const Products = () => {
                                 name=""
                                 id="">
                                 <option value="">Category</option>
-                                <option value="Fruits & Vegetable">Fruits & Vegetable</option>
-                                <option value="Baby Care">Baby Care</option>
-                                {/* {
-                                    categories.map(category => <option key={category.parent}>{category.parent}</option>)
-                                } */}
+                                {!catPending &&
+                                    categories.categories.map(category => <option
+                                        key={category.parent}
+                                        value={category.parent}
+                                    >
+                                        {category.parent}
+                                    </option>)
+                                }
                             </select>
                         </div>
                         <div className=''>
@@ -311,6 +296,7 @@ const Products = () => {
                                                 nextLabel={<FaArrowRight />}
                                                 breakLabel={"..."}
                                                 pageCount={totalPages}
+                                                forcePage={currentPage - 1}
                                                 marginPagesDisplayed={1}
                                                 pageRangeDisplayed={3}
                                                 onPageChange={handlePageClick}

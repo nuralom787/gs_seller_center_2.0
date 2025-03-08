@@ -9,6 +9,11 @@ const useCategories = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState("");
 
+    const handleSearch = (text) => {
+        setSearch(text);
+        setCurrentPage(1)
+    }
+
     const { data: categories, refetch, isPending, isError } = useQuery({
         queryKey: ["categories", itemPerPage, currentPage, search],
         queryFn: async () => {
@@ -18,7 +23,7 @@ const useCategories = () => {
         placeholderData: keepPreviousData,
     });
 
-    return [categories, refetch, isPending, isError, itemPerPage, setItemPerPage, setCurrentPage, setSearch];
+    return [categories, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage, handleSearch];
 };
 
 export default useCategories;

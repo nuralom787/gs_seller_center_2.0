@@ -13,14 +13,14 @@ import Swal from "sweetalert2";
 
 const Categories = () => {
     const axiosSecure = useAxiosSecure();
-    const [categories, refetch, isPending, isError, itemPerPage, setItemPerPage, setCurrentPage, setSearch] = useCategories();
+    const [categories, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage, handleSearch] = useCategories();
     const { register, handleSubmit } = useForm();
     const totalPages = Math.ceil(categories?.count / itemPerPage);
 
 
     // Search Specific Category By Type.
     const onSubmit = (value) => {
-        setSearch(value.search);
+        handleSearch(value.search);
     };
 
 
@@ -243,6 +243,7 @@ const Categories = () => {
                                                 nextLabel={<FaArrowRight />}
                                                 breakLabel={"..."}
                                                 pageCount={totalPages}
+                                                forcePage={currentPage - 1}
                                                 marginPagesDisplayed={1}
                                                 pageRangeDisplayed={3}
                                                 onPageChange={handlePageClick}

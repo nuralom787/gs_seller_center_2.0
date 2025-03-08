@@ -43,7 +43,7 @@ const useProducts = () => {
         placeholderData: keepPreviousData,
     });
 
-    return [products, refetch, isPending, isError, itemPerPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice];
+    return [products, refetch, isPending, isError, itemPerPage, currentPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice];
 };
 
 export default useProducts;
