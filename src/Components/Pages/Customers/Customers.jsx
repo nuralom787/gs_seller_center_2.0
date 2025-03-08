@@ -7,8 +7,11 @@ import { ScaleLoader } from "react-spinners";
 import empty from '../../../assets/Images/empty.svg';
 import ReactPaginate from "react-paginate";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const Customers = () => {
+    const axiosSecure = useAxiosSecure();
     const [customers, refetch, isPending, isError, currentPage, setCurrentPage, itemPerPage, handleSearch] = useCustomers();
     const { register, handleSubmit } = useForm();
     const totalPages = Math.ceil(customers?.count / itemPerPage);
@@ -21,9 +24,34 @@ const Customers = () => {
     };
 
 
-    // Delete Product Function.
-    const deleteCustomer = (id) => {
+    // Delete Customers Function.
+    const deleteCustomer = (customer) => {
+        Swal.fire({
+            title: "Are you sure?",
+            html: `
+            <p>You rally want to delete <strong>${customer.displayName}</strong> information? Once you delete this, you can not revert it!</p>
+            `,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
 
+                // Call Delete Api.
+                const deleteRes = await axiosSecure.delete(`/customer/delete/${customer._id}`);
+
+                if (deleteRes.data.deletedCount > 0) {
+                    refetch();
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Customer Information Deleted Successfully.",
+                        icon: "success"
+                    });
+                }
+            }
+        });
     };
 
 
@@ -103,7 +131,7 @@ const Customers = () => {
                                                             <td className='px-2 py-3 font-sans text-sm'>
                                                                 <div className="flex">
                                                                     <NavLink
-                                                                        to={`/customer-order/${customer._id}`}
+                                                                        to={`/customers/customer/orders/${customer._id}`}
                                                                         data-tooltip-id="my-tooltip"
                                                                         data-tooltip-content="View Orders"
                                                                         data-tooltip-place="bottom"
@@ -113,11 +141,11 @@ const Customers = () => {
                                                                         </svg>
                                                                     </NavLink>
                                                                     <button
-                                                                        onClick={() => sweetAlert(customer)}
+                                                                        onClick={() => deleteCustomer(customer)}
                                                                         data-tooltip-id="my-tooltip"
                                                                         data-tooltip-content="Delete"
                                                                         data-tooltip-place="bottom"
-                                                                        className="py-2 px-1 mx-1 text-gray-400 hover:text-red-600"
+                                                                        className="cursor-pointer py-2 px-1 mx-1 text-gray-400 hover:text-red-600"
                                                                     >
                                                                         <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1.2em" width="1.2em" xmlns="http://www.w3.org/2000/svg"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
                                                                         </svg>
