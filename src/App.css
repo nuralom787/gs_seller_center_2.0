@@ -41,17 +41,19 @@
 
 .react-tags__selected-tag {
     cursor: pointer;
-    background-color: #007bff;
+    background-color: #00a63e;
     color: white;
+    font-weight: 600;
     padding: 5px 8px;
     margin: 4px;
     border-radius: 4px;
-    display: flex;
-    align-items: center;
+    transition-duration: 700ms;
 }
 
 .react-tags__selected-tag:hover {
-    background-color: #0056b3;
+    /* background-color: #0056b3; */
+    background-color: #086d2e;
+    transition-duration: 700ms;
 }
 
 .react-tags__suggestions {
@@ -64,4 +66,11 @@
     width: auto;
     outline: none;
     border: none;
+}
+
+[class="light"] .react-tags__search-input {
+    width: auto;
+    outline: none;
+    border: none;
+    color: #151515;
 }

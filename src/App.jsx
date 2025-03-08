@@ -12,6 +12,8 @@ import ProductDetails from './Components/Pages/DetailsPages/ProductDetails/Produ
 import AddProduct from './Components/Pages/AddPages/AddProduct/AddProduct'
 import Categories from './Components/Pages/Categories/Categories'
 import AddCategory from './Components/Pages/AddPages/AddCategory/AddCategory'
+import Customers from './Components/Pages/Customers/Customers'
+import UpdateCategory from './Components/Pages/UpdatePages/UpdateCategory/UpdateCategory'
 
 function App() {
   const queryClient = new QueryClient();
@@ -38,13 +40,14 @@ function App() {
             <Route path='/' element={<DashboardHome />} />
             <Route path='/products' element={<Products />} />
             <Route path='/categories' element={<Categories />} />
+            <Route path='/customers' element={<Customers />} />
             <Route path='/orders' element={<Orders />} />
             <Route path='/products/add-product' element={<AddProduct />} />
             <Route path='/products/details/:id' element={<ProductDetails />} />
             <Route path='/products/update/:id' element={<UpdateProduct />} />
             <Route path='/categories/add-category' element={<AddCategory />} />
             <Route path='/categories/details/:id' element={<UpdateProduct />} />
-            <Route path='/categories/update/:id' element={<UpdateProduct />} />
+            <Route path='/categories/update/:id' element={<UpdateCategory />} />
           </Route>
         </Routes>
       </BrowserRouter>
