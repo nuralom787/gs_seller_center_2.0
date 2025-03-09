@@ -1,0 +1,24 @@
+.display-invoice {
+    display: block;
+}
+
+.print-invoice {
+    display: none;
+}
+
+
+/*------------------------------------
+            Print Function
+------------------------------------*/
+
+
+@media print {
+    .display-invoice {
+        display: none;
+    }
+
+    .print-invoice {
+        display: block;
+        height: 100vh;
+    }
+}

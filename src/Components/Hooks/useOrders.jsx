@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "./useAxiosSecure";
 import { useState } from "react";
 
-const useOrders = (email) => {
+const useOrders = (email = '') => {
     const axiosSecure = useAxiosSecure();
     const [itemPerPage, setItemPerPage] = useState(15);
     const [currentPage, setCurrentPage] = useState(1);

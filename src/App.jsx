@@ -15,6 +15,7 @@ import AddCategory from './Components/Pages/AddPages/AddCategory/AddCategory'
 import Customers from './Components/Pages/Customers/Customers'
 import UpdateCategory from './Components/Pages/UpdatePages/UpdateCategory/UpdateCategory'
 import CustomerOrders from './Components/Pages/CustomerOrders/CustomerOrders'
+import Invoice from './Components/Pages/Invoice/Invoice'
 
 function App() {
   const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ function App() {
             <Route path='/categories' element={<Categories />} />
             <Route path='/customers' element={<Customers />} />
             <Route path='/orders' element={<Orders />} />
+            <Route path='/orders/order/invoice/:id' element={<Invoice />} />
             <Route path='/products/add-product' element={<AddProduct />} />
             <Route path='/products/details/:id' element={<ProductDetails />} />
             <Route path='/products/update/:id' element={<UpdateProduct />} />
