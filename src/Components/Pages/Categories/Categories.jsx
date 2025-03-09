@@ -83,7 +83,7 @@ const Categories = () => {
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <Tooltip id="my-tooltip" />
             <div className='px-6 mx-auto'>
-                <h2 className='my-4 font-bold font-sans text-lg dark:text-white'>Categories</h2>
+                <h2 className='my-4 font-bold font-sans text-xl text-[#151515] dark:text-white'>Categories</h2>
                 <div className='bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-800 rounded-md font-sans'>
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4 px-5 py-3'>
                         <form onSubmit={handleSubmit(onSubmit)} className='w-full flex items-center gap-2'>

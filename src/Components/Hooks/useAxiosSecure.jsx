@@ -4,7 +4,7 @@ import axios from "axios";
 // import { AuthContext } from "../Providers/AuthProvider";
 
 const axiosSecure = axios.create({
-    baseURL: 'https://gs-dashboard-4864dwebapp.vercel.app'
+    baseURL: 'http://localhost:5000'
 });
 
 const useAxiosSecure = () => {
