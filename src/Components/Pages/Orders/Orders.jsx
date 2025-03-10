@@ -8,11 +8,19 @@ import ReactPaginate from "react-paginate";
 import { FaArrowLeft, FaArrowRight, FaFileDownload } from "react-icons/fa";
 import { toast } from "react-toastify";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import { useForm } from "react-hook-form";
 
 const Orders = () => {
     const axiosSecure = useAxiosSecure();
-    const [orders, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage] = useOrders();
+    const [orders, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage, handleSearch, handleStatus, handleDate] = useOrders();
     const totalPages = Math.ceil(orders?.count / itemPerPage);
+    const { register, handleSubmit } = useForm()
+
+
+    const onSubmit = (data) => {
+        handleSearch(data.name)
+        // console.log(data)
+    };
 
 
     // Update Order Status Function.
@@ -45,11 +53,21 @@ const Orders = () => {
                 <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded-md'>
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-4 py-6 items-center'>
                         <div>
-                            <input className='w-full bg-gray-100 dark:bg-gray-800 p-3 border border-gray-300 dark:focus:border-gray-100 dark:border-gray-500 text-[#151515] dark:text-white outline-0 text-sm rounded-md' type="number" placeholder='Search by phone' />
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <input
+                                    {...register("name")}
+                                    className='w-full bg-gray-100 dark:bg-gray-800 p-3 border border-gray-300 dark:focus:border-gray-100 dark:border-gray-500 text-[#151515] dark:text-white outline-0 text-sm rounded-md'
+                                    type="search"
+                                    placeholder='Search by Customer Name'
+                                />
+                            </form>
                         </div>
                         <div>
-                            <select className='w-full bg-gray-100 dark:bg-gray-800 p-3 border border-gray-300 dark:focus:border-gray-100 dark:border-gray-500 text-[#151515] dark:text-white outline-0 text-sm rounded-md' name="" id="">
-                                <option value="" hidden>By Status</option>
+                            <select
+                                onChange={(e) => handleStatus(e.target.value)}
+                                className='cursor-pointer w-full bg-gray-100 dark:bg-gray-800 p-3 border border-gray-300 dark:focus:border-gray-100 dark:border-gray-500 text-[#151515] dark:text-white outline-0 text-sm rounded-md'
+                            >
+                                <option value="">By Status</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Processing">Processing</option>
                                 <option value="Delivered">Delivered</option>
@@ -57,8 +75,11 @@ const Orders = () => {
                             </select>
                         </div>
                         <div>
-                            <select className='w-full bg-gray-100 dark:bg-gray-800 p-3 border border-gray-300 dark:focus:border-gray-100 dark:border-gray-500 text-[#151515] dark:text-white outline-0 text-sm rounded-md' name="" id="">
-                                <option value="" hidden>By Time</option>
+                            <select
+                                onChange={(e) => handleDate(e.target.value)}
+                                className='cursor-pointer w-full bg-gray-100 dark:bg-gray-800 p-3 border border-gray-300 dark:focus:border-gray-100 dark:border-gray-500 text-[#151515] dark:text-white outline-0 text-sm rounded-md'
+                            >
+                                <option value="">By Time</option>
                                 <option value="5">Last 5 dyes orders</option>
                                 <option value="7">Last 7 dyes orders</option>
                                 <option value="15">Last 15 dyes orders</option>

@@ -7,22 +7,34 @@ const useOrders = (email = '') => {
     const [itemPerPage, setItemPerPage] = useState(15);
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState('');
+    const [status, setStatus] = useState('');
+    const [date, setDate] = useState('');
 
     const handleSearch = (text) => {
         setSearch(text);
         setCurrentPage(1);
     };
 
+    const handleStatus = (text) => {
+        setStatus(text);
+        setCurrentPage(1);
+    };
+
+    const handleDate = (text) => {
+        setDate(text);
+        setCurrentPage(1);
+    };
+
     const { data: orders, refetch, isPending, isError } = useQuery({
-        queryKey: ["orders", itemPerPage, currentPage, email],
+        queryKey: ["orders", itemPerPage, currentPage, email, search, status, date],
         queryFn: async () => {
-            const res = await axiosSecure.get(`/orders?page=${currentPage - 1}&size=${itemPerPage}&email=${email}`);
+            const res = await axiosSecure.get(`/orders?page=${currentPage - 1}&size=${itemPerPage}&email=${email}&search=${search}&status=${status}&date=${date}`);
             return res.data;
         },
         placeholderData: keepPreviousData,
     });
 
-    return [orders, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage];
+    return [orders, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage, handleSearch, handleStatus, handleDate];
 };
 
 export default useOrders;
