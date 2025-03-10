@@ -6,17 +6,23 @@
     display: none;
 }
 
-.side-nav {
+/* .side-nav {
     display: block;
+    position: relative;
 }
 
 .header {
     display: block;
-}
+} */
 
-/*------------------------------------
-            Print Function
-------------------------------------*/
+
+
+
+/*------------------------------------------------
+                Print Function
+------------------------------------------------*/
+
+
 
 
 @media print {

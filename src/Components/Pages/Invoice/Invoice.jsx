@@ -56,7 +56,10 @@ const Invoice = () => {
                                                 </p>
                                             </h2>
                                             <div className='text-start md:text-end mt-4 md:mt-0'>
-                                                <img className='w-8 h-8' src={logo} alt="" />
+                                                <div className="flex justify-start md:justify-end items-center gap-2">
+                                                    <img className='w-10' src={logo} alt="" />
+                                                    <h1 className="text-2xl text-[#151515] dark:text-white font-bold">GS-Seller Center</h1>
+                                                </div>
                                                 <small className='font-sans text-gray-600 dark:text-gray-400'>Cecilia Chapman, 561-4535 Nulla LA, <br /> United States 96522</small>
                                             </div>
                                         </div>
@@ -66,7 +69,13 @@ const Invoice = () => {
                                         <div className='flex flex-col md:flex-row justify-between'>
                                             <span className='text-start'>
                                                 <h4 className='text-sm font-bold text-[#151515] dark:text-gray-200 font-sans'>DATE.</h4>
-                                                <p className='text-sm text-gray-600 dark:text-gray-300 font-sans'>{order?.orderTime?.slice(4, 15)}</p>
+                                                <p className='text-sm text-gray-600 dark:text-gray-300 font-sans'>
+                                                    {new Date(order?.orderTime).toLocaleDateString("en", {
+                                                        day: "2-digit",
+                                                        month: "short",
+                                                        year: "numeric"
+                                                    })}
+                                                </p>
                                             </span>
                                             <span className='text-start mt-4 md:mt-0'>
                                                 <h4 className='text-sm font-bold text-[#151515] dark:text-gray-200 font-sans'>INVOICE NO.</h4>
@@ -154,7 +163,7 @@ const Invoice = () => {
                     </div>
 
                     {/* Print Div For Invoice */}
-                    <div className='print-invoice py-3 md:py-6 print:py-0 print:px-0 print:min-h-screen px-4 md:px-6 bg-white'>
+                    <div className='print-invoice py-3 md:py-6 print:py-4 print:px-4 px-4 md:px-6 bg-white'>
                         <div className='bg-white'>
                             <div id='invoice' className='bg-white'>
                                 <div className='bg-white'>
@@ -180,7 +189,10 @@ const Invoice = () => {
                                             </p>
                                         </h2>
                                         <div className='text-end'>
-                                            <img className='w-8 h-8' src={logo} alt="" />
+                                            <div className="flex justify-end items-center gap-2">
+                                                <img className='w-10' src={logo} alt="" />
+                                                <h1 className="text-2xl text-[#151515] font-bold">GS-Seller Center</h1>
+                                            </div>
                                             <small className='font-sans text-gray-600'>Cecilia Chapman, 561-4535 Nulla LA, <br /> United States 96522</small>
                                         </div>
                                     </div>
@@ -190,7 +202,13 @@ const Invoice = () => {
                                     <div className='flex justify-between'>
                                         <span className='text-start'>
                                             <h4 className='text-sm font-bold text-gray-700 font-sans'>DATE.</h4>
-                                            <p className='text-sm text-gray-600 font-sans'>{order?.orderTime?.slice(4, 15)}</p>
+                                            <p className='text-sm text-gray-600 font-sans'>
+                                                {new Date(order?.orderTime).toLocaleDateString("en", {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric"
+                                                })}
+                                            </p>
                                         </span>
                                         <span className='text-start'>
                                             <h4 className='text-sm font-bold text-gray-700 font-sans'>INVOICE NO.</h4>
