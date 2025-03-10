@@ -6,6 +6,13 @@
     display: none;
 }
 
+.side-nav {
+    display: block;
+}
+
+.header {
+    display: block;
+}
 
 /*------------------------------------
             Print Function
@@ -13,12 +20,34 @@
 
 
 @media print {
+    * {
+        overflow: visible !important;
+    }
+
+    [class='dark'] {
+        background-color: white;
+    }
+
     .display-invoice {
+        display: none;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0;
         display: none;
     }
 
     .print-invoice {
         display: block;
         height: 100vh;
+        width: 100vw;
+    }
+
+    .side-nav {
+        display: none;
+    }
+
+    .header {
+        display: none;
     }
 }

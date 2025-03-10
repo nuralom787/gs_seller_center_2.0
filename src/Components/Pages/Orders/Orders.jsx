@@ -118,13 +118,12 @@ const Orders = () => {
                                                                 {order._id.slice(20, 24).toUpperCase()}
                                                             </td>
                                                             <td className='px-3 py-3 text-sm'>
-                                                                {new Date(order.orderTime).toLocaleDateString("en", {
+                                                                {new Date(order.orderTime).toLocaleDateString("en-BD", {
                                                                     day: "2-digit",
                                                                     month: "short",
                                                                     year: "numeric",
-                                                                })} {new Date(order.orderTime).toLocaleTimeString("en-US", {
-                                                                    hour: "numeric",
-                                                                    hour: '2-digit',
+                                                                })} {new Date(order.orderTime).toLocaleTimeString("en-BD", {
+                                                                    hour: "2-digit",
                                                                     minute: "2-digit",
                                                                     hour12: true,
                                                                 })}
