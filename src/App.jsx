@@ -18,6 +18,7 @@ import CustomerOrders from './Components/Pages/CustomerOrders/CustomerOrders'
 import Invoice from './Components/Pages/Invoice/Invoice'
 import Coupons from './Components/Pages/Coupons/Coupons'
 import UpdateCoupons from './Components/Pages/UpdatePages/UpdateCoupons/UpdateCoupons'
+import AddCoupon from './Components/Pages/AddPages/AddCoupon/AddCoupon'
 
 function App() {
   const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ function App() {
             <Route path='/categories/details/:id' element={<UpdateProduct />} />
             <Route path='/categories/update/:id' element={<UpdateCategory />} />
             <Route path='/customers/customer/orders/:id' element={<CustomerOrders />} />
+            <Route path='/coupons/add-coupon' element={<AddCoupon />} />
             <Route path='/coupons/update/:id' element={<UpdateCoupons />} />
           </Route>
         </Routes>

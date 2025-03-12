@@ -63,7 +63,7 @@ const Coupons = () => {
                         </div>
                         <div className='col-span-1 md:col-span-1'>
                             <NavLink
-                                to="/add-coupon"
+                                to="/coupons/add-coupon"
                                 className='block w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-md text-center text-xl font-semibold duration-500'
                             >
                                 + Add Coupon
