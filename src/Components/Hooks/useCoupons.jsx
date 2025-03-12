@@ -20,7 +20,7 @@ const useCoupons = () => {
 
 
     const { data: coupons, refetch, isPending, isError } = useQuery({
-        queryKey: ["coupons"],
+        queryKey: ["coupons", currentPage, itemPerPage, search],
         queryFn: async () => {
             const res = await axiosPublic.get(`/coupons?page=${currentPage - 1}&size=${itemPerPage}&search=${search}`);
             return res.data;

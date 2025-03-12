@@ -9,11 +9,18 @@ import { PiSmileySadBold } from "react-icons/pi";
 import empty from '../../../assets/Images/empty.svg';
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import { useForm } from "react-hook-form";
 
 const Coupons = () => {
     const axiosSecure = useAxiosSecure();
+    const { register, handleSubmit } = useForm()
     const [coupons, refetch, isPending, isError, currentPage, setCurrentPage, itemPerPage, perPageItem, handleSearch] = useCoupons();
     const totalPages = Math.ceil(coupons?.count / itemPerPage);
+
+    // Handle Search Function
+    const onSubmit = (data) => {
+        handleSearch(data.search);
+    }
 
     // Delete Coupons Function.
     const deleteCoupon = (coupon) => {
@@ -54,13 +61,17 @@ const Coupons = () => {
                 <h2 className='my-4 font-bold text-xl text-[#151515] dark:text-white'>Coupons</h2>
                 <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded-md py-5 px-4'>
                     <div className='grid grid-cols-1 md:grid-cols-4 items-center gap-4'>
-                        <div className='col-span-1 md:col-span-3'>
+                        <form
+                            onSubmit={handleSubmit(onSubmit)}
+                            className='col-span-1 md:col-span-3'
+                        >
                             <input
+                                {...register("search")}
                                 className='w-full bg-gray-100 dark:bg-gray-800 p-3 border border-gray-300 dark:border-gray-500 dark:focus:border-gray-100 text-[#151515] dark:text-white font-semibold outline-0 text-base rounded-md'
                                 type="search"
                                 placeholder='Search by Coupon code/name'
                             />
-                        </div>
+                        </form>
                         <div className='col-span-1 md:col-span-1'>
                             <NavLink
                                 to="/coupons/add-coupon"
