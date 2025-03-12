@@ -19,6 +19,7 @@ import Invoice from './Components/Pages/Invoice/Invoice'
 import Coupons from './Components/Pages/Coupons/Coupons'
 import UpdateCoupons from './Components/Pages/UpdatePages/UpdateCoupons/UpdateCoupons'
 import AddCoupon from './Components/Pages/AddPages/AddCoupon/AddCoupon'
+import OurStaffs from './Components/Pages/OurStaffs/OurStaffs'
 
 function App() {
   const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ function App() {
             <Route path='/customers' element={<Customers />} />
             <Route path='/orders' element={<Orders />} />
             <Route path='/coupons' element={<Coupons />} />
+            <Route path='/our-staffs' element={<OurStaffs />} />
             <Route path='/orders/order/invoice/:id' element={<Invoice />} />
             <Route path='/products/add-product' element={<AddProduct />} />
             <Route path='/products/details/:id' element={<ProductDetails />} />
