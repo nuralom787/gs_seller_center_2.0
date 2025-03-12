@@ -20,6 +20,8 @@ import Coupons from './Components/Pages/Coupons/Coupons'
 import UpdateCoupons from './Components/Pages/UpdatePages/UpdateCoupons/UpdateCoupons'
 import AddCoupon from './Components/Pages/AddPages/AddCoupon/AddCoupon'
 import OurStaffs from './Components/Pages/OurStaffs/OurStaffs'
+import UpdateStaff from './Components/Pages/UpdatePages/UpdateStaff/UpdateStaff'
+import AddStaff from './Components/Pages/AddPages/AddStaff/AddStaff'
 
 function App() {
   const queryClient = new QueryClient();
@@ -60,6 +62,8 @@ function App() {
             <Route path='/customers/customer/orders/:id' element={<CustomerOrders />} />
             <Route path='/coupons/add-coupon' element={<AddCoupon />} />
             <Route path='/coupons/update/:id' element={<UpdateCoupons />} />
+            <Route path='/our-staffs/add-staff' element={<AddStaff />} />
+            <Route path='/our-staffs/update/:id' element={<UpdateStaff />} />
           </Route>
         </Routes>
       </BrowserRouter>
