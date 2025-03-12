@@ -34,7 +34,7 @@ const useProducts = () => {
 
 
 
-    const { data: products, isPending, refetch, isError } = useQuery({
+    const { data: products, refetch, isPending, isError, isRefetching } = useQuery({
         queryKey: ["products", itemPerPage, currentPage, title, category, price],
         queryFn: async () => {
             const res = await axiosPublic.get(`/products?size=${itemPerPage}&page=${currentPage - 1}&category=${category}&title=${title}&price=${price}`);
@@ -43,7 +43,7 @@ const useProducts = () => {
         placeholderData: keepPreviousData,
     });
 
-    return [products, refetch, isPending, isError, itemPerPage, currentPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice];
+    return [products, refetch, isPending, isError, isRefetching, itemPerPage, currentPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice];
 };
 
 export default useProducts;

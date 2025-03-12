@@ -1,8 +1,7 @@
 import { useForm } from "react-hook-form";
 import { NavLink } from "react-router";
 import useProducts from "../../Hooks/useProducts";
-import { BiSolidEdit } from "react-icons/bi";
-import { FaTrashAlt, FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import { PiSmileySadBold } from "react-icons/pi";
 import { FiZoomIn } from "react-icons/fi";
 import { ScaleLoader } from "react-spinners";
@@ -12,17 +11,15 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import empty from '../../../assets/Images/empty.svg';
-import { useState } from "react";
 import useCategories from "../../Hooks/useCategories";
 
 
 const Products = () => {
-    const [products, refetch, isPending, isError, itemPerPage, currentPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice] = useProducts();
-    const [categories, , catPending] = useCategories();
+    const [products, refetch, isPending, isError, isRefetching, itemPerPage, currentPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice] = useProducts();
+    const [categories, , catPending, catError] = useCategories();
     const axiosSecure = useAxiosSecure();
     const { register, handleSubmit } = useForm();
     const totalPages = Math.ceil(products?.count / itemPerPage);
-    const [search, setSearch] = useState(false);
 
 
     // Search Product By Name/Title.
@@ -107,7 +104,7 @@ const Products = () => {
                                     className='w-full border-0 text-[#151515] dark:text-white p-3 outline-0 placeholder:text-[#151515] dark:placeholder:text-gray-100'
                                     type="search"
                                     placeholder='Search by Product Name' />
-                                {search &&
+                                {isRefetching &&
                                     <svg className="ml-2 mr-4 h-6 w-6 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="green" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="green" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
@@ -121,7 +118,7 @@ const Products = () => {
                                 name=""
                                 id="">
                                 <option value="">Category</option>
-                                {!catPending &&
+                                {!catPending && !catError &&
                                     categories.categories.map(category => <option
                                         key={category.parent}
                                         value={category.parent}
