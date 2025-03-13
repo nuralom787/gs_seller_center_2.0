@@ -8,8 +8,11 @@ import { ScaleLoader } from "react-spinners";
 import empty from '../../../assets/Images/empty.svg';
 import { PiSmileySadBold } from "react-icons/pi";
 import { Tooltip } from "react-tooltip";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 const OurStaffs = () => {
+    const axiosSecure = useAxiosSecure();
     const { register, handleSubmit } = useForm();
     const [staffs, refetch, isPending, isError, currentPage, setCurrentPage, itemPerPage, handleSearch, handleRole] = useStaffs();
     const totalPages = Math.ceil(staffs?.count / itemPerPage);
@@ -20,6 +23,36 @@ const OurStaffs = () => {
         handleSearch(data.search);
         // console.log(data);
     };
+
+
+    // Delete Staff Function.
+    const handleDelete = (staff) => {
+        Swal.fire({
+            title: "Are you sure?",
+            html: `
+            <p>Do you want to delete <strong>${staff.displayName}</strong> Information? Once deleted, You can't revert this!</p>
+            `,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+
+                // Call Delete Api.
+                const deleteRes = await axiosSecure.delete(`/staff/delete/${staff._id}`);
+                if (deleteRes.data.deletedCount > 0) {
+                    refetch();
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Staff Information Deleted Successfully.",
+                        icon: "success"
+                    });
+                }
+            }
+        });
+    }
 
 
     // Handle Pagination Page Click Function.
@@ -151,6 +184,7 @@ const OurStaffs = () => {
                                                                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                                                                     </NavLink>
                                                                     <button
+                                                                        onClick={() => handleDelete(staff)}
                                                                         className="p-2 cursor-pointer text-gray-400 hover:text-red-600"
                                                                         data-tooltip-id="my-tooltip"
                                                                         data-tooltip-content="Delete Staff"
