@@ -9,6 +9,7 @@ import { FaArrowLeft, FaArrowRight, FaFileDownload } from "react-icons/fa";
 import { toast } from "react-toastify";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
 
 const Orders = () => {
     const axiosSecure = useAxiosSecure();
@@ -48,6 +49,9 @@ const Orders = () => {
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <Tooltip id="my-tooltip" />
+            <Helmet>
+                <title>GS Seller Center | Orders</title>
+            </Helmet>
             <div className='px-6 mx-auto'>
                 <h2 className='my-4 font-bold text-xl text-[#151515] dark:text-white'>Orders</h2>
                 <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded-md'>

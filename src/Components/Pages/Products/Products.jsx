@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import ReactPaginate from "react-paginate";
 import empty from '../../../assets/Images/empty.svg';
 import useCategories from "../../Hooks/useCategories";
+import { Helmet } from "react-helmet-async";
 
 
 const Products = () => {
@@ -93,6 +94,9 @@ const Products = () => {
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <Tooltip id="my-tooltip" />
+            <Helmet>
+                <title>GS Seller Center | Products</title>
+            </Helmet>
             <div className='px-6 font-sans'>
                 <h2 className='my-4 font-bold text-lg text-[#151515] dark:text-white'>Products</h2>
                 <div className='mb-6'>

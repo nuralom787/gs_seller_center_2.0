@@ -10,6 +10,7 @@ import { PiSmileySadBold } from "react-icons/pi";
 import { Tooltip } from "react-tooltip";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import { Helmet } from "react-helmet-async";
 
 const OurStaffs = () => {
     const axiosSecure = useAxiosSecure();
@@ -64,6 +65,9 @@ const OurStaffs = () => {
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <Tooltip id="my-tooltip" />
+            <Helmet>
+                <title>GS Seller Center | Staffs</title>
+            </Helmet>
             <div className='px-6 w-full'>
                 <h2 className='my-4 font-bold text-xl text-[#151515] dark:text-white'>Our Staffs</h2>
                 <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded-md mb-6'>

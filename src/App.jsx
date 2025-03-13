@@ -22,6 +22,8 @@ import AddCoupon from './Components/Pages/AddPages/AddCoupon/AddCoupon'
 import OurStaffs from './Components/Pages/OurStaffs/OurStaffs'
 import UpdateStaff from './Components/Pages/UpdatePages/UpdateStaff/UpdateStaff'
 import AddStaff from './Components/Pages/AddPages/AddStaff/AddStaff'
+import AuthProvider from './Provider/AuthProvider'
+import { HelmetProvider } from 'react-helmet-async'
 
 function App() {
   const queryClient = new QueryClient();
@@ -41,32 +43,36 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ToastContainer />
-        <Routes>
-          <Route path="/" element={<Main />}>
-            <Route path='/' element={<DashboardHome />} />
-            <Route path='/products' element={<Products />} />
-            <Route path='/categories' element={<Categories />} />
-            <Route path='/customers' element={<Customers />} />
-            <Route path='/orders' element={<Orders />} />
-            <Route path='/coupons' element={<Coupons />} />
-            <Route path='/our-staffs' element={<OurStaffs />} />
-            <Route path='/orders/order/invoice/:id' element={<Invoice />} />
-            <Route path='/products/add-product' element={<AddProduct />} />
-            <Route path='/products/details/:id' element={<ProductDetails />} />
-            <Route path='/products/update/:id' element={<UpdateProduct />} />
-            <Route path='/categories/add-category' element={<AddCategory />} />
-            <Route path='/categories/details/:id' element={<UpdateProduct />} />
-            <Route path='/categories/update/:id' element={<UpdateCategory />} />
-            <Route path='/customers/customer/orders/:id' element={<CustomerOrders />} />
-            <Route path='/coupons/add-coupon' element={<AddCoupon />} />
-            <Route path='/coupons/update/:id' element={<UpdateCoupons />} />
-            <Route path='/our-staffs/add-staff' element={<AddStaff />} />
-            <Route path='/our-staffs/update/:email' element={<UpdateStaff />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthProvider>
+        <HelmetProvider>
+          <BrowserRouter>
+            <ToastContainer />
+            <Routes>
+              <Route path="/" element={<Main />}>
+                <Route path='/' element={<DashboardHome />} />
+                <Route path='/products' element={<Products />} />
+                <Route path='/categories' element={<Categories />} />
+                <Route path='/customers' element={<Customers />} />
+                <Route path='/orders' element={<Orders />} />
+                <Route path='/coupons' element={<Coupons />} />
+                <Route path='/our-staffs' element={<OurStaffs />} />
+                <Route path='/orders/order/invoice/:id' element={<Invoice />} />
+                <Route path='/products/add-product' element={<AddProduct />} />
+                <Route path='/products/details/:id' element={<ProductDetails />} />
+                <Route path='/products/update/:id' element={<UpdateProduct />} />
+                <Route path='/categories/add-category' element={<AddCategory />} />
+                <Route path='/categories/details/:id' element={<UpdateProduct />} />
+                <Route path='/categories/update/:id' element={<UpdateCategory />} />
+                <Route path='/customers/customer/orders/:id' element={<CustomerOrders />} />
+                <Route path='/coupons/add-coupon' element={<AddCoupon />} />
+                <Route path='/coupons/update/:id' element={<UpdateCoupons />} />
+                <Route path='/our-staffs/add-staff' element={<AddStaff />} />
+                <Route path='/our-staffs/update/:email' element={<UpdateStaff />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </HelmetProvider>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }

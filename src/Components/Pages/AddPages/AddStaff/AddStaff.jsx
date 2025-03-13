@@ -24,7 +24,7 @@ const AddStaff = () => {
 
     // Load Staffs Info.
     useEffect(() => {
-        fetch('http://localhost:5000/staffs')
+        fetch('https://gs-dashboard-4864dwebapp.vercel.app/staffs')
             .then(res => res.json())
             .then(data => setStaffs(data))
     }, []);

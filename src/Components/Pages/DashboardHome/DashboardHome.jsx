@@ -1,8 +1,13 @@
+import { Helmet } from "react-helmet-async";
+
 const DashboardHome = () => {
 
 
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto px-6 pt-20 pb-10 bg-[#FAFAFA] dark:bg-base-300">
+            <Helmet>
+                <title>GS Seller Center | Dashboard</title>
+            </Helmet>
             <p className='my-6 font-bold text-lg dark:text-white'>Dashboard Overview</p>
             <div className=''>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8'>

@@ -10,6 +10,7 @@ import empty from '../../../assets/Images/empty.svg';
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
 
 const Coupons = () => {
     const axiosSecure = useAxiosSecure();
@@ -57,6 +58,9 @@ const Coupons = () => {
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto pt-20 bg-[#FAFAFA] dark:bg-base-300">
             <Tooltip id="my-tooltip" />
+            <Helmet>
+                <title>GS Seller Center | Coupons</title>
+            </Helmet>
             <div className='px-6 w-full'>
                 <h2 className='my-4 font-bold text-xl text-[#151515] dark:text-white'>Coupons</h2>
                 <div className='bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded-md py-5 px-4'>
