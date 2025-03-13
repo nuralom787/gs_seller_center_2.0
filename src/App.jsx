@@ -63,7 +63,7 @@ function App() {
             <Route path='/coupons/add-coupon' element={<AddCoupon />} />
             <Route path='/coupons/update/:id' element={<UpdateCoupons />} />
             <Route path='/our-staffs/add-staff' element={<AddStaff />} />
-            <Route path='/our-staffs/update/:id' element={<UpdateStaff />} />
+            <Route path='/our-staffs/update/:email' element={<UpdateStaff />} />
           </Route>
         </Routes>
       </BrowserRouter>

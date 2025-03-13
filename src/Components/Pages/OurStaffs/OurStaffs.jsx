@@ -112,7 +112,7 @@ const OurStaffs = () => {
                                                                 {staff.staffId.toUpperCase()}
                                                             </td>
                                                             <td className='px-3 py-3 text-sm'>
-                                                                <img className='w-10 h-10 rounded-full' src={`data:image/*;base64,${staff.photoURL}`} alt="" />
+                                                                <img className='w-10 h-10 rounded-full border-2 border-gray-300 dark:border-white' src={staff.photoURL} alt="" />
                                                             </td>
                                                             <td className='px-3 py-3 text-sm'>
                                                                 {staff.displayName}
@@ -126,8 +126,11 @@ const OurStaffs = () => {
                                                             <td className='px-3 py-3 text-sm'>
                                                                 {staff.joiningDate &&
                                                                     <span>
-                                                                        {new Date(staff.joiningDate).toDateString().slice(4, 10)},
-                                                                        {new Date(staff.joiningDate).toDateString().slice(10, 15)}
+                                                                        {new Date(staff?.joiningDate).toLocaleDateString("en-BD", {
+                                                                            day: "2-digit",
+                                                                            month: "short",
+                                                                            year: "numeric",
+                                                                        })}
                                                                     </span>
                                                                 }
                                                             </td>
@@ -137,7 +140,7 @@ const OurStaffs = () => {
                                                             <td className='py-3 text-sm'>
                                                                 <div className="flex items-center">
                                                                     <NavLink
-                                                                        to={`/our-staffs/update/${staff._id}`}
+                                                                        to={`/our-staffs/update/${staff.email}`}
                                                                         className="p-2 cursor-pointer text-gray-400 hover:text-green-600"
                                                                         data-tooltip-id="my-tooltip"
                                                                         data-tooltip-content="Update Staff"
