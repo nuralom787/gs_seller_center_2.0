@@ -91,6 +91,7 @@ const Login = () => {
                     <div>
                         {loading ?
                             <button
+                                disabled
                                 className="w-full inline-flex justify-center items-center rounded-md border border-transparent py-3 text-xl font-semibold text-white bg-indigo-700 outline-0">
                                 Processing...
                                 <svg className="ml-2 h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

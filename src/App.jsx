@@ -26,6 +26,7 @@ import AuthProvider from './Provider/AuthProvider'
 import { HelmetProvider } from 'react-helmet-async'
 import Login from './Components/Pages/Authentications/Login/Login'
 import PrivetRoute from './PrivetRoute/PrivetRoute'
+import Settings from './Components/Pages/Setting/Settings'
 
 function App() {
   const queryClient = new QueryClient();
@@ -58,6 +59,7 @@ function App() {
                 <Route path='/orders' element={<Orders />} />
                 <Route path='/coupons' element={<Coupons />} />
                 <Route path='/our-staffs' element={<OurStaffs />} />
+                <Route path='/settings' element={<Settings />} />
                 <Route path='/orders/order/invoice/:id' element={<Invoice />} />
                 <Route path='/products/add-product' element={<AddProduct />} />
                 <Route path='/products/details/:id' element={<ProductDetails />} />

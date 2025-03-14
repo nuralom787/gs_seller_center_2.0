@@ -16,17 +16,27 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, currentUser => {
             setUser(currentUser);
-            setLoading(false);
+            // setLoading(false);
             if (currentUser) {
                 const userInfo = { email: currentUser.email };
                 axiosPublic.post('/jwt', userInfo, { withCredentials: true })
                     .then(res => {
                         // console.log(res.data);
+                        setLoading(false);
                     })
                     .catch(err => {
                         console.log(err.message);
                     })
-            };
+            }
+            else {
+                // Call Logout Api.
+                axiosPublic.post("/logout", {}, {
+                    withCredentials: true
+                }).then(res => {
+                    console.log(res.data);
+                    setLoading(false);
+                })
+            }
         });
 
         return () => {
