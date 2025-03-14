@@ -19,20 +19,14 @@ const AuthProvider = ({ children }) => {
             setLoading(false);
             if (currentUser) {
                 const userInfo = { email: currentUser.email };
-                axiosPublic.post('/jwt', userInfo)
+                axiosPublic.post('/jwt', userInfo, { withCredentials: true })
                     .then(res => {
                         // console.log(res.data);
-                        if (res.data.token) {
-                            localStorage.setItem('access-token', res.data.token);
-                        }
                     })
                     .catch(err => {
                         console.log(err.message);
                     })
-            }
-            else {
-                localStorage.removeItem('access-token');
-            }
+            };
         });
 
         return () => {

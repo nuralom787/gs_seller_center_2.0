@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MdSunny } from "react-icons/md";
 import { FaMoon, FaRegBell } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { NavLink } from "react-router";
 import defaultUser from '../../../assets/Images/User/user.png';
+import { AuthContext } from "../../../Provider/AuthProvider";
+import { Tooltip } from "react-tooltip";
 
 
 const Header = ({ handleDrawer }) => {
+    const { user, LogoutUser } = useContext(AuthContext);
     const [theme, setTheme] = useState(localStorage.getItem('theme'));
     const [dropdown, setDropdown] = useState(false);
 
+    // console.log(user)
 
     const setDrop = () => {
         if (dropdown === true) {
@@ -46,6 +50,7 @@ const Header = ({ handleDrawer }) => {
 
     return (
         <div className="header absolute w-full bg-gray-200 dark:bg-base-200 px-4 py-6 border-b border-b-black dark:border-b-white">
+            <Tooltip id="my-tooltip" />
             <ul className="flex justify-between lg:justify-end items-center gap-6">
                 <div className="lg:hidden">
                     <button onClick={handleDrawer}>
@@ -53,21 +58,38 @@ const Header = ({ handleDrawer }) => {
                     </button>
                 </div>
                 <div className="flex justify-between items-center gap-6">
-                    <li className="tooltip tooltip-bottom text-2xl cursor-pointer" data-tip="Theme">
+                    <li className="font-semibold text-xl text-[#00a63e]">
+                        {user && <p>{user?.email}</p>}
+                    </li>
+                    <li
+                        className="text-2xl cursor-pointer text-[#00a63e]"
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Theme"
+                        data-tooltip-place="bottom"
+                    >
                         {theme === "light" ?
-                            <MdSunny onClick={() => changeDarkMode()} className="text-[#151515]" />
+                            <MdSunny onClick={() => changeDarkMode()} />
                             :
-                            <FaMoon onClick={() => changeDarkMode()} className="" />
+                            <FaMoon onClick={() => changeDarkMode()} />
                         }
                     </li>
-                    <li className="relative text-left tooltip tooltip-bottom" data-tip="Notifications">
-                        <button className="relative align-middle rounded-md focus:outline-none">
-                            <FaRegBell className="text-3xl text-[#151515] dark:text-white" />
+                    <li
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Notification"
+                        data-tooltip-place="bottom"
+                    >
+                        <button className="relative cursor-pointer align-middle rounded-md focus:outline-none">
+                            <FaRegBell className="text-3xl text-[#00a63e]" />
                             <p className="absolute -top-1.5 -right-1 bg-red-500 text-white px-1.5 font-semibold text-sm rounded-full">16</p>
                         </button>
                     </li>
-                    <li className="relative text-left tooltip tooltip-bottom" data-tip="Profile">
-                        <button onClick={setDrop} className="rounded-full dark:bg-gray-500 bg-white text-white h-8 w-8 font-medium mx-auto focus:outline-none">
+                    <li
+                        className="relative text-left"
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Profile"
+                        data-tooltip-place="bottom"
+                    >
+                        <button onClick={setDrop} className=" cursor-pointer rounded-full dark:bg-gray-500 bg-white text-white h-8 w-8 font-medium mx-auto focus:outline-none">
                             <div className="relative rounded-full inline-block w-8 h-8 align-middle" aria-hidden="true">
                                 <img className="object-cover w-8 h-8 rounded-full" src={defaultUser} alt='' />
                             </div>
@@ -93,7 +115,7 @@ const Header = ({ handleDrawer }) => {
                                 </NavLink>
                             </li>
                             <li className="cursor-pointer justify-between font-serif font-medium py-2 pl-4 transition-colors duration-150 hover:bg-gray-100 text-gray-500 hover:text-green-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200">
-                                <button className='w-full'>
+                                <button onClick={LogoutUser} className='w-full'>
                                     <span className="flex items-center text-sm">
                                         <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 512 512" className="w-4 h-4 mr-3" aria-hidden="true" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
                                             <path fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="32" d="M304 336v40a40 40 0 01-40 40H104a40 40 0 01-40-40V136a40 40 0 0140-40h152c22.09 0 48 17.91 48 40v40m64 160l80-80-80-80m-192 80h256">

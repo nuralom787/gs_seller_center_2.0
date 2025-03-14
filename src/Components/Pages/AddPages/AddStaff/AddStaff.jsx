@@ -24,9 +24,16 @@ const AddStaff = () => {
 
     // Load Staffs Info.
     useEffect(() => {
-        fetch('https://gs-dashboard-4864dwebapp.vercel.app/staffs')
-            .then(res => res.json())
-            .then(data => setStaffs(data))
+        const loadStaffs = async () => {
+            try {
+                const res = await axiosSecure.get("/staffs");
+                setStaffs(res.data);
+                console.log(res.data);
+            } catch (error) {
+                console.error("Failed to fetch staffs", error);
+            }
+        }
+        loadStaffs();
     }, []);
 
     // Preview Image Before Upload.

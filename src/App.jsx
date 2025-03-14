@@ -24,6 +24,8 @@ import UpdateStaff from './Components/Pages/UpdatePages/UpdateStaff/UpdateStaff'
 import AddStaff from './Components/Pages/AddPages/AddStaff/AddStaff'
 import AuthProvider from './Provider/AuthProvider'
 import { HelmetProvider } from 'react-helmet-async'
+import Login from './Components/Pages/Authentications/Login/Login'
+import PrivetRoute from './PrivetRoute/PrivetRoute'
 
 function App() {
   const queryClient = new QueryClient();
@@ -48,7 +50,7 @@ function App() {
           <BrowserRouter>
             <ToastContainer />
             <Routes>
-              <Route path="/" element={<Main />}>
+              <Route path="/" element={<PrivetRoute><Main /></PrivetRoute>}>
                 <Route path='/' element={<DashboardHome />} />
                 <Route path='/products' element={<Products />} />
                 <Route path='/categories' element={<Categories />} />
@@ -69,6 +71,7 @@ function App() {
                 <Route path='/our-staffs/add-staff' element={<AddStaff />} />
                 <Route path='/our-staffs/update/:email' element={<UpdateStaff />} />
               </Route>
+              <Route path='/user/login' element={<Login />} />
             </Routes>
           </BrowserRouter>
         </HelmetProvider>

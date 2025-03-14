@@ -7,10 +7,12 @@ import { FiSettings } from "react-icons/fi";
 import { CiLogin } from "react-icons/ci";
 import './Navigation.css';
 import logoImg from '../../../assets/logo.jpg';
+import { useContext } from "react";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 
 const Navigation = () => {
-
+    const { LogoutUser } = useContext(AuthContext);
 
     return (
         <section className='navigation max-h-screen overflow-y-auto dark:bg-base-200'>
@@ -96,7 +98,7 @@ const Navigation = () => {
                 </li>
             </ul>
             <div className="flex justify-center">
-                <button className="absolute bottom-6 flex justify-center items-center gap-4 cursor-pointer duration-150 font-semibold text-xl focus:outline-none px-10 py-3 rounded-md text-white border border-transparent bg-green-600 hover:bg-green-700 max-w-fit" type="button">
+                <button onClick={LogoutUser} className="absolute bottom-6 flex justify-center items-center gap-4 cursor-pointer duration-150 font-semibold text-xl focus:outline-none px-10 py-3 rounded-md text-white border border-transparent bg-green-600 hover:bg-green-700 max-w-fit" type="button">
                     <CiLogin />
                     Log out
                 </button>

@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from "react-router";
 import Navigation from "../Navigation/Navigation";
 import Header from "../../Shared/Header/Header";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { RiShoppingBag3Line } from "react-icons/ri";
 import { FaGift, FaList, FaRegCompass, FaRegUser } from "react-icons/fa";
@@ -11,8 +11,10 @@ import { CiLogin } from "react-icons/ci";
 import logoImg from '../../../assets/logo.jpg';
 import Drawer from 'react-modern-drawer'
 import 'react-modern-drawer/dist/index.css'
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 const Main = () => {
+    const { LogoutUser } = useContext(AuthContext);
     const [drawer, setDrawer] = useState(false);
 
     const handleDrawer = () => {
@@ -123,7 +125,7 @@ const Main = () => {
                             </li>
                         </ul>
                         <div className="flex justify-center">
-                            <button className="absolute bottom-6 flex justify-center items-center gap-4 cursor-pointer duration-150 font-semibold text-xl focus:outline-none px-10 py-3 rounded-md text-white border border-transparent bg-green-600 hover:bg-green-700 max-w-fit" type="button">
+                            <button onClick={LogoutUser} className="absolute bottom-6 flex justify-center items-center gap-4 cursor-pointer duration-150 font-semibold text-xl focus:outline-none px-10 py-3 rounded-md text-white border border-transparent bg-green-600 hover:bg-green-700 max-w-fit" type="button">
                                 <CiLogin />
                                 Log out
                             </button>
