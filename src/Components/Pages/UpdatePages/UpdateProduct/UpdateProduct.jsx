@@ -76,59 +76,63 @@ const UpdateProduct = () => {
             confirmButtonText: "Yes, Update it!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                setLoading(true)
-                if (newImg) {
-                    // Upload Image in ImageBB and Get Image URL.
-                    const imageFile = { image: formData.image };
-                    const res = await axiosPublic.post(image_hosting_api, imageFile, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
+                toast.info("This feature is disabled for demo!", {
+                    position: "top-center",
+                    autoClose: 1500
+                });
+                // setLoading(true)
+                // if (newImg) {
+                //     // Upload Image in ImageBB and Get Image URL.
+                //     const imageFile = { image: formData.image };
+                //     const res = await axiosPublic.post(image_hosting_api, imageFile, {
+                //         headers: {
+                //             'Content-Type': 'multipart/form-data'
+                //         }
+                //     });
 
-                    // Store Data In Database.
-                    if (res.data.success) {
-                        // Set Product image and thumb.
-                        formData.image = res.data.data.image.url;
-                        formData.thumb = res.data.data.thumb.url;
+                //     // Store Data In Database.
+                //     if (res.data.success) {
+                //         // Set Product image and thumb.
+                //         formData.image = res.data.data.image.url;
+                //         formData.thumb = res.data.data.thumb.url;
 
-                        // Call Product Update Api.
-                        const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
-                        if (productRes.data.modifiedCount > 0) {
-                            refetch();
-                            refetch2();
-                            navigate('/products');
-                            Swal.fire({
-                                title: "Updated!",
-                                text: "Your Product has been Updated Successfully.",
-                                icon: "success"
-                            });
-                            setLoading(false);
-                        }
-                    }
-                    else {
-                        toast.error("Image Server Dose not Response! Please Try Again..", {
-                            position: "top-center",
-                            autoClose: 3000
-                        })
-                        setLoading(false);
-                    }
-                }
-                else {
-                    // Call Product Update Api.
-                    const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
-                    if (productRes.data.modifiedCount > 0) {
-                        refetch();
-                        refetch2();
-                        navigate('/products');
-                        Swal.fire({
-                            title: "Updated!",
-                            text: "Your Product has been Updated Successfully.",
-                            icon: "success"
-                        });
-                        setLoading(false);
-                    }
-                }
+                //         // Call Product Update Api.
+                //         const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
+                //         if (productRes.data.modifiedCount > 0) {
+                //             refetch();
+                //             refetch2();
+                //             navigate('/products');
+                //             Swal.fire({
+                //                 title: "Updated!",
+                //                 text: "Your Product has been Updated Successfully.",
+                //                 icon: "success"
+                //             });
+                //             setLoading(false);
+                //         }
+                //     }
+                //     else {
+                //         toast.error("Image Server Dose not Response! Please Try Again..", {
+                //             position: "top-center",
+                //             autoClose: 3000
+                //         })
+                //         setLoading(false);
+                //     }
+                // }
+                // else {
+                //     // Call Product Update Api.
+                //     const productRes = await axiosSecure.patch(`/update/product/${id}`, formData);
+                //     if (productRes.data.modifiedCount > 0) {
+                //         refetch();
+                //         refetch2();
+                //         navigate('/products');
+                //         Swal.fire({
+                //             title: "Updated!",
+                //             text: "Your Product has been Updated Successfully.",
+                //             icon: "success"
+                //         });
+                //         setLoading(false);
+                //     }
+                // }
             }
         });
     };

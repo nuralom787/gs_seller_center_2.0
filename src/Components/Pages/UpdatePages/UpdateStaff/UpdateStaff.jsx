@@ -63,59 +63,63 @@ const UpdateStaff = () => {
             confirmButtonText: "Yes, Update it!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                setLoading(true)
-                if (newImg) {
-                    // Upload Image in ImageBB and Get Image URL.
-                    const imageFile = { image: formData.photoURL };
-                    const res = await axiosPublic.post(image_hosting_api, imageFile, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
+                toast.info("This feature is disabled for demo!", {
+                    position: "top-center",
+                    autoClose: 1500
+                });
+                // setLoading(true)
+                // if (newImg) {
+                //     // Upload Image in ImageBB and Get Image URL.
+                //     const imageFile = { image: formData.photoURL };
+                //     const res = await axiosPublic.post(image_hosting_api, imageFile, {
+                //         headers: {
+                //             'Content-Type': 'multipart/form-data'
+                //         }
+                //     });
 
-                    // Store Data In Database.
-                    if (res.data.success) {
-                        // Set Staff image and thumb.
-                        formData.photoURL = res.data.data.image.url;
-                        formData.thumb = res.data.data.thumb.url;
+                //     // Store Data In Database.
+                //     if (res.data.success) {
+                //         // Set Staff image and thumb.
+                //         formData.photoURL = res.data.data.image.url;
+                //         formData.thumb = res.data.data.thumb.url;
 
-                        // Call Staff Update Api.
-                        const staffRes = await axiosSecure.patch(`/update/staff/${staff._id}`, formData);
-                        if (staffRes.data.modifiedCount > 0) {
-                            refetch();
-                            refetch2();
-                            navigate('/our-staffs');
-                            Swal.fire({
-                                title: "Updated!",
-                                text: "Staff Information Updated Successfully.",
-                                icon: "success"
-                            });
-                            setLoading(false);
-                        };
-                    }
-                    else {
-                        toast.error("Image Server Dose not Response! Please Try Again..", {
-                            position: "top-center",
-                            autoClose: 3000
-                        })
-                        setLoading(false);
-                    }
-                }
-                else {
-                    // Call Staff Update Api.
-                    const staffRes = await axiosSecure.patch(`/update/staff/${staff._id}`, formData);
-                    if (staffRes.data.modifiedCount > 0) {
-                        refetch();
-                        refetch2();
-                        navigate('/our-staffs');
-                        Swal.fire({
-                            title: "Updated!",
-                            text: "Staff Information Updated Successfully..",
-                            icon: "success"
-                        });
-                        setLoading(false);
-                    }
-                }
+                //         // Call Staff Update Api.
+                //         const staffRes = await axiosSecure.patch(`/update/staff/${staff._id}`, formData);
+                //         if (staffRes.data.modifiedCount > 0) {
+                //             refetch();
+                //             refetch2();
+                //             navigate('/our-staffs');
+                //             Swal.fire({
+                //                 title: "Updated!",
+                //                 text: "Staff Information Updated Successfully.",
+                //                 icon: "success"
+                //             });
+                //             setLoading(false);
+                //         };
+                //     }
+                //     else {
+                //         toast.error("Image Server Dose not Response! Please Try Again..", {
+                //             position: "top-center",
+                //             autoClose: 3000
+                //         })
+                //         setLoading(false);
+                //     }
+                // }
+                // else {
+                //     // Call Staff Update Api.
+                //     const staffRes = await axiosSecure.patch(`/update/staff/${staff._id}`, formData);
+                //     if (staffRes.data.modifiedCount > 0) {
+                //         refetch();
+                //         refetch2();
+                //         navigate('/our-staffs');
+                //         Swal.fire({
+                //             title: "Updated!",
+                //             text: "Staff Information Updated Successfully..",
+                //             icon: "success"
+                //         });
+                //         setLoading(false);
+                //     }
+                // }
             }
         });
     };
@@ -224,7 +228,6 @@ const UpdateStaff = () => {
                                         <div className="col-span-8 sm:col-span-4">
                                             <input
                                                 {...register("password")}
-                                                defaultValue={staff?.password}
                                                 className="w-full p-3 text-base rounded-md border border-gray-200 focus:border-gray-500 dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-900 text-[#151515] dark:text-white outline-0"
                                                 type="password"
                                                 placeholder="Password"
@@ -268,7 +271,7 @@ const UpdateStaff = () => {
                                                 defaultValue={staff?.role}
                                                 className="w-full p-3 text-base rounded-md border border-gray-200 focus:border-gray-500 dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-900 text-[#151515] dark:text-white outline-0"
                                             >
-                                                <option value={staff?.role}>{staff?.role}</option>
+                                                <option value={staff?.role} hidden>{staff?.role}</option>
                                                 <option value="Admin">Admin</option>
                                                 <option value="CEO">CEO</option>
                                                 <option value="Manager">Manager</option>

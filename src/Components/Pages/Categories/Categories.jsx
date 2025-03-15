@@ -46,7 +46,7 @@ const Categories = () => {
         Swal.fire({
             title: "Are you sure?",
             html: `
-                <p>Do you want to delete <strong>${category.parent}?</strong> Once deleted, You can't revert this!</p>
+            <p>Do you want to delete <strong>${category.parent}?</strong> Once deleted, You can't revert this!</p>
             `,
             icon: "warning",
             showCancelButton: true,
@@ -54,21 +54,25 @@ const Categories = () => {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Delete it!"
         }).then(async (result) => {
-            if (result.isConfirmed) {
+            toast.info("This feature is disabled for demo!", {
+                position: "top-center",
+                autoClose: 1500
+            });
+            // if (result.isConfirmed) {
 
-                // Call Delete Api.
-                const deleteRes = await axiosSecure.delete(`/category/delete/${category._id}`);
-                // console.log(deleteRes);
+            //     // Call Delete Api.
+            //     const deleteRes = await axiosSecure.delete(`/category/delete/${category._id}`);
+            //     // console.log(deleteRes);
 
-                if (deleteRes.data.deletedCount > 0) {
-                    refetch();
-                    Swal.fire({
-                        title: "Deleted!",
-                        html: `<p>The Category <strong>${category.parent}</strong> has been deleted successfully.</p>`,
-                        icon: "success"
-                    });
-                }
-            }
+            //     if (deleteRes.data.deletedCount > 0) {
+            //         refetch();
+            //         Swal.fire({
+            //             title: "Deleted!",
+            //             html: `<p>The Category <strong>${category.parent}</strong> has been deleted successfully.</p>`,
+            //             icon: "success"
+            //         });
+            //     }
+            // }
         });
     };
 

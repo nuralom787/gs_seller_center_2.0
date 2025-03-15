@@ -10,6 +10,7 @@ import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { Helmet } from "react-helmet-async";
+import { toast } from "react-toastify";
 
 const Customers = () => {
     const axiosSecure = useAxiosSecure();
@@ -39,18 +40,21 @@ const Customers = () => {
             confirmButtonText: "Yes, delete it!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-
+                toast.info("This feature is disabled for demo!", {
+                    position: "top-center",
+                    autoClose: 1500
+                });
                 // Call Delete Api.
-                const deleteRes = await axiosSecure.delete(`/customer/delete/${customer._id}`);
+                // const deleteRes = await axiosSecure.delete(`/customer/delete/${customer._id}`);
 
-                if (deleteRes.data.deletedCount > 0) {
-                    refetch();
-                    Swal.fire({
-                        title: "Deleted!",
-                        text: "Customer Information Deleted Successfully.",
-                        icon: "success"
-                    });
-                }
+                // if (deleteRes.data.deletedCount > 0) {
+                //     refetch();
+                //     Swal.fire({
+                //         title: "Deleted!",
+                //         text: "Customer Information Deleted Successfully.",
+                //         icon: "success"
+                //     });
+                // }
             }
         });
     };

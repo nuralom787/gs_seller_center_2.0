@@ -11,6 +11,7 @@ import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import { Helmet } from "react-helmet-async";
+import { toast } from "react-toastify";
 
 const Coupons = () => {
     const axiosSecure = useAxiosSecure();
@@ -34,17 +35,21 @@ const Coupons = () => {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!"
         }).then(async (result) => {
-            if (result.isConfirmed) {
-                const deleteRes = await axiosSecure.delete(`/coupon/delete/${coupon._id}`);
-                if (deleteRes.data.deletedCount > 0) {
-                    refetch();
-                    Swal.fire({
-                        title: "Deleted!",
-                        text: "Coupon Data has been deleted Successfully.",
-                        icon: "success"
-                    });
-                }
-            }
+            toast.info("This feature is disabled for demo!", {
+                position: "top-center",
+                autoClose: 1500
+            });
+            // if (result.isConfirmed) {
+            //     const deleteRes = await axiosSecure.delete(`/coupon/delete/${coupon._id}`);
+            //     if (deleteRes.data.deletedCount > 0) {
+            //         refetch();
+            //         Swal.fire({
+            //             title: "Deleted!",
+            //             text: "Coupon Data has been deleted Successfully.",
+            //             icon: "success"
+            //         });
+            //     }
+            // }
         });
     };
 

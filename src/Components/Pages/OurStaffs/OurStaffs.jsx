@@ -11,6 +11,7 @@ import { Tooltip } from "react-tooltip";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { Helmet } from "react-helmet-async";
+import { toast } from "react-toastify";
 
 const OurStaffs = () => {
     const axiosSecure = useAxiosSecure();
@@ -40,17 +41,20 @@ const OurStaffs = () => {
             confirmButtonText: "Yes, Delete it!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-
+                toast.info("This feature is disabled for demo!", {
+                    position: "top-center",
+                    autoClose: 1500
+                });
                 // Call Delete Api.
-                const deleteRes = await axiosSecure.delete(`/staff/delete/${staff._id}`);
-                if (deleteRes.data.deletedCount > 0) {
-                    refetch();
-                    Swal.fire({
-                        title: "Deleted!",
-                        text: "Staff Information Deleted Successfully.",
-                        icon: "success"
-                    });
-                }
+                // const deleteRes = await axiosSecure.delete(`/staff/delete/${staff._id}`);
+                // if (deleteRes.data.deletedCount > 0) {
+                //     refetch();
+                //     Swal.fire({
+                //         title: "Deleted!",
+                //         text: "Staff Information Deleted Successfully.",
+                //         icon: "success"
+                //     });
+                // }
             }
         });
     }

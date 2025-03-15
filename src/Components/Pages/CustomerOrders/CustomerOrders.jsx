@@ -94,7 +94,15 @@ const CustomerOrders = () => {
                                                                     {order._id.slice(20, 24).toUpperCase()}
                                                                 </td>
                                                                 <td className='px-3 py-3 font-sans text-sm'>
-                                                                    {order.orderTime.slice(4, 10)}, {order.orderTime.slice(11, 15)}
+                                                                    {new Date(order.orderTime).toLocaleDateString("en-BD", {
+                                                                        day: "2-digit",
+                                                                        month: "short",
+                                                                        year: "numeric",
+                                                                    })} {new Date(order.orderTime).toLocaleTimeString("en-BD", {
+                                                                        hour: "2-digit",
+                                                                        minute: "2-digit",
+                                                                        hour12: true,
+                                                                    })}
                                                                 </td>
                                                                 <td className='px-3 py-3 font-sans text-sm'>
                                                                     {order.city}, {order.street}

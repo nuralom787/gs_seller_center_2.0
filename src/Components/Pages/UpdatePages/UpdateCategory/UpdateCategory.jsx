@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useCategories from "../../../Hooks/useCategories";
 import useAxiosPublic from "../../../Hooks/useAxiosPublic";
+import { toast } from "react-toastify";
 const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
@@ -58,59 +59,63 @@ const UpdateCategory = () => {
             confirmButtonText: "Yes, Update it!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                setLoading(true)
-                if (newImg) {
-                    // Upload Image in ImageBB and Get Image URL.
-                    const imageFile = { image: formData.icon };
-                    const res = await axiosPublic.post(image_hosting_api, imageFile, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
+                toast.info("This feature is disabled for demo!", {
+                    position: "top-center",
+                    autoClose: 1500
+                });
+                // setLoading(true)
+                // if (newImg) {
+                //     // Upload Image in ImageBB and Get Image URL.
+                //     const imageFile = { image: formData.icon };
+                //     const res = await axiosPublic.post(image_hosting_api, imageFile, {
+                //         headers: {
+                //             'Content-Type': 'multipart/form-data'
+                //         }
+                //     });
 
-                    // Store Data In Database.
-                    if (res.data.success) {
-                        // Set Category image and thumb.
-                        formData.icon = res.data.data.image.url;
-                        formData.thumb = res.data.data.thumb.url;
+                //     // Store Data In Database.
+                //     if (res.data.success) {
+                //         // Set Category image and thumb.
+                //         formData.icon = res.data.data.image.url;
+                //         formData.thumb = res.data.data.thumb.url;
 
-                        // Call Category Update Api.
-                        const categoryRes = await axiosSecure.patch(`/update/category/${id}`, formData);
-                        if (categoryRes.data.modifiedCount > 0) {
-                            refetch();
-                            refetch2();
-                            navigate('/categories');
-                            Swal.fire({
-                                title: "Updated!",
-                                text: "Your Category has been Updated Successfully.",
-                                icon: "success"
-                            });
-                            setLoading(false);
-                        }
-                    }
-                    else {
-                        toast.error("Image Server Dose not Response! Please Try Again..", {
-                            position: "top-center",
-                            autoClose: 3000
-                        })
-                        setLoading(false);
-                    }
-                }
-                else {
-                    // Call Category Update Api.
-                    const categoryRes = await axiosSecure.patch(`/update/category/${id}`, formData);
-                    if (categoryRes.data.modifiedCount > 0) {
-                        refetch();
-                        refetch2();
-                        navigate('/categories');
-                        Swal.fire({
-                            title: "Updated!",
-                            text: "Your Category has been Updated Successfully.",
-                            icon: "success"
-                        });
-                        setLoading(false);
-                    }
-                }
+                //         // Call Category Update Api.
+                //         const categoryRes = await axiosSecure.patch(`/update/category/${id}`, formData);
+                //         if (categoryRes.data.modifiedCount > 0) {
+                //             refetch();
+                //             refetch2();
+                //             navigate('/categories');
+                //             Swal.fire({
+                //                 title: "Updated!",
+                //                 text: "Your Category has been Updated Successfully.",
+                //                 icon: "success"
+                //             });
+                //             setLoading(false);
+                //         }
+                //     }
+                //     else {
+                //         toast.error("Image Server Dose not Response! Please Try Again..", {
+                //             position: "top-center",
+                //             autoClose: 3000
+                //         })
+                //         setLoading(false);
+                //     }
+                // }
+                // else {
+                //     // Call Category Update Api.
+                //     const categoryRes = await axiosSecure.patch(`/update/category/${id}`, formData);
+                //     if (categoryRes.data.modifiedCount > 0) {
+                //         refetch();
+                //         refetch2();
+                //         navigate('/categories');
+                //         Swal.fire({
+                //             title: "Updated!",
+                //             text: "Your Category has been Updated Successfully.",
+                //             icon: "success"
+                //         });
+                //         setLoading(false);
+                //     }
+                // }
             }
         });
     };

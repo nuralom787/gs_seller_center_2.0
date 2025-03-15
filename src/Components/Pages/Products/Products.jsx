@@ -58,21 +58,25 @@ const Products = () => {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Delete it!"
         }).then(async (result) => {
-            if (result.isConfirmed) {
+            toast.info("This feature is disabled for demo!", {
+                position: "top-center",
+                autoClose: 1500
+            });
+            // if (result.isConfirmed) {
 
-                // Call Delete Api.
-                const deleteRes = await axiosSecure.delete(`/product/delete/${product._id}`);
-                // console.log(deleteRes);
+            //     // Call Delete Api.
+            //     const deleteRes = await axiosSecure.delete(`/product/delete/${product._id}`);
+            //     // console.log(deleteRes);
 
-                if (deleteRes.data.deletedCount > 0) {
-                    refetch();
-                    Swal.fire({
-                        title: "Deleted!",
-                        html: `<p>The Product <strong>${product.title}</strong> has been deleted successfully.</p>`,
-                        icon: "success"
-                    });
-                }
-            }
+            //     if (deleteRes.data.deletedCount > 0) {
+            //         refetch();
+            //         Swal.fire({
+            //             title: "Deleted!",
+            //             html: `<p>The Product <strong>${product.title}</strong> has been deleted successfully.</p>`,
+            //             icon: "success"
+            //         });
+            //     }
+            // }
         });
     };
 
@@ -169,7 +173,7 @@ const Products = () => {
                                 {products.count ?
                                     <div>
                                         <div className="w-full overflow-x-auto rounded-t-lg border border-gray-200 dark:border-gray-700">
-                                            <table className="w-full static">
+                                            <table className="w-full whitespace-nowrap">
                                                 <thead className="text-xs font-semibold tracking-wide text-gray-500 uppercase border-b border-gray-200 dark:border-gray-700 bg-gray-100 dark:text-gray-400 dark:bg-gray-800">
                                                     <tr>
                                                         <td className="px-3 py-3">SKU</td>
@@ -191,34 +195,34 @@ const Products = () => {
                                                             <td className='px-3 py-3 text-xs font-bold text-center'>
                                                                 {product._id.slice(20, 24).toUpperCase()}
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm'>
                                                                 {product.thumb && <img className='w-12 shadow-inner rounded-full p-1 mr-2' src={product.thumb} alt="" />}
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm'>
                                                                 {product.title}
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm'>
                                                                 {product.parent}
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm font-bold whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm font-bold'>
                                                                 ${product.price.toFixed(2)}
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm text-center whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm text-center'>
                                                                 {product.quantity < 0 ? 0 : product.quantity}
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm'>
                                                                 {product.quantity > 0 ?
                                                                     <span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-green-500 bg-green-100 dark:bg-green-800 dark:text-green-100">In Stock</span>
                                                                     :
                                                                     <span className="inline-flex px-2 text-xs font-medium leading-5 rounded-full text-red-500 bg-red-100 dark:text-red-100 dark:bg-red-800">Stock Out</span>
                                                                 }
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm font-bold whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm font-bold'>
                                                                 {product.discount > 0 &&
                                                                     <span>{Math.ceil(product.discount)}% OFF</span>
                                                                 }
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm'>
                                                                 <NavLink
                                                                     to={`/products/details/${product._id}`}
                                                                     title='Details'
@@ -230,11 +234,11 @@ const Products = () => {
                                                                     <FiZoomIn />
                                                                 </NavLink>
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm'>
                                                                 {product.status === "Show" ?
                                                                     <button
                                                                         onClick={() => upStatus(product)}
-                                                                        className="text-2xl flex justify-center text-center m-auto"
+                                                                        className="cursor-pointer text-2xl flex justify-center text-center m-auto"
                                                                         data-tooltip-id="my-tooltip"
                                                                         data-tooltip-content="Visible"
                                                                         data-tooltip-place="bottom"
@@ -245,7 +249,7 @@ const Products = () => {
                                                                     :
                                                                     <button
                                                                         onClick={() => upStatus(product)}
-                                                                        className="text-2xl flex justify-center text-center m-auto"
+                                                                        className="cursor-pointer text-2xl flex justify-center text-center m-auto"
                                                                         data-tooltip-id="my-tooltip"
                                                                         data-tooltip-content="Hide"
                                                                         data-tooltip-place="bottom"
@@ -255,7 +259,7 @@ const Products = () => {
                                                                     </button>
                                                                 }
                                                             </td>
-                                                            <td className='px-3 py-3 text-sm whitespace-nowrap'>
+                                                            <td className='px-3 py-3 text-sm'>
                                                                 <div className="flex justify-center items-center gap-4">
                                                                     <NavLink
                                                                         to={`/products/update/${product._id}`}
