@@ -15,11 +15,11 @@ const AuthProvider = ({ children }) => {
     // Current User State Observer.
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, currentUser => {
+            const userEmail = currentUser?.email || user?.email;
+            const loggedUser = { email: userEmail };
             setUser(currentUser);
-            // setLoading(false);
             if (currentUser) {
-                const userInfo = { email: currentUser.email };
-                axiosPublic.post('/jwt', userInfo, { withCredentials: true })
+                axiosPublic.post('/jwt', loggedUser, { withCredentials: true })
                     .then(res => {
                         // console.log(res.data);
                         setLoading(false);
@@ -30,12 +30,11 @@ const AuthProvider = ({ children }) => {
             }
             else {
                 // Call Logout Api.
-                axiosPublic.post("/logout", {}, {
-                    withCredentials: true
-                }).then(res => {
-                    console.log(res.data);
-                    setLoading(false);
-                })
+                axiosPublic.post("/logout", loggedUser, { withCredentials: true })
+                    .then(res => {
+                        console.log(res.data);
+                        setLoading(false);
+                    })
             }
         });
 
