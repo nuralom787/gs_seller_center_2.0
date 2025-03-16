@@ -16,9 +16,9 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, currentUser => {
             setUser(currentUser);
-            const userInfo = { email: currentUser.email };
+            const userInfo = { email: currentUser?.email };
             // setLoading(false);
-            if (currentUser?.email) {
+            if (currentUser) {
                 axiosPublic.post('/jwt', userInfo, { withCredentials: true })
                     .then(res => {
                         // console.log(res.data);
