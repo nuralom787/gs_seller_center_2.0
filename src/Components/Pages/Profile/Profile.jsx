@@ -8,12 +8,12 @@ import { toast } from "react-toastify";
 import { ScaleLoader } from "react-spinners";
 
 const Profile = () => {
-    const { user } = useContext(AuthContext);
+    const { user, UpdateUserInfo } = useContext(AuthContext);
     const [staff, refetch, isPending, isError] = useStaff(user.email);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const [loading, setLoading] = useState(false);
     const [upImg, setUpImg] = useState("");
-
+    const [newImg, setNewImg] = useState("");
 
 
     // Preview Image Before Upload.
@@ -24,21 +24,20 @@ const Profile = () => {
             const imageData = reader.result.split(",")[1];
             setUpImg(imageData);
         };
+        setNewImg(e.target.files[0]);
     };
 
 
     // Update Profile Information.
-    const onSubmit = data => {
-        data.photoURL = upImg ? upImg : staff.photoURL;
-        data.displayName = data.displayName ? data.displayName : staff.displayName;
-        data.contact = data.contact ? data.contact : staff.contact;
-        data.email = data.email ? data.email : staff.email;
-        data.role = data.role ? data.role : staff.role;
-        data.joiningDate = staff.joiningDate;
-        data.staffId = staff.staffId;
-        data.createdAt = staff.createdAt;
-        data.password = staff.password;
-        data.updatedAt = new Date().toISOString();
+    const onSubmit = (formData) => {
+        formData.photoURL = newImg ? newImg : staff.photoURL;
+        formData.displayName = formData.displayName ? formData.displayName : staff.displayName;
+        formData.email = formData.email ? formData.email : staff.email;
+        formData.contact = formData.contact ? formData.contact : staff.contact;
+        formData.role = formData.role ? formData.role : staff.role;
+        formData.updatedAt = new Date().toISOString();
+
+        // console.log(formData);
 
         Swal.fire({
             title: "Are you sure?",
@@ -50,6 +49,17 @@ const Profile = () => {
             confirmButtonText: "Yes, Update!"
         }).then((result) => {
             if (result.isConfirmed) {
+                const userInfo = {
+                    name: staff.displayName,
+                    image: staff.photoURL
+                }
+                // UpdateUserInfo(userInfo)
+                //     .then(res => {
+                //         console.log(res);
+                //     })
+                //     .catch(err => {
+                //         console.log(err);
+                //     })
                 toast.info("This feature is disabled for demo!", {
                     position: "top-center",
                     autoClose: 1500
@@ -181,10 +191,14 @@ const Profile = () => {
                                                             {...register("role")}
                                                             className="w-full bg-gray-200 dark:bg-gray-800 text-[#151515] dark:text-white p-3 border border-gray-300 dark:border-gray-500 focus:border-gray-600 dark:focus:border-gray-100 outline-0 rounded-md">
                                                             <option value={staff?.role} hidden>{staff?.role}</option>
+                                                            <option value="Super Admin">Super Admin</option>
                                                             <option value="Admin">Admin</option>
                                                             <option value="CEO">CEO</option>
                                                             <option value="Manager">Manager</option>
-                                                            <option value="Delivery Person">Delivery Person</option>
+                                                            <option value="Accountant">Accountant</option>
+                                                            <option value="Driver">Driver</option>
+                                                            <option value="Security Guard">Security Guard</option>
+                                                            <option value="Deliver Person">Delivery Person</option>
                                                         </select>
                                                     </div>
                                                 </div>

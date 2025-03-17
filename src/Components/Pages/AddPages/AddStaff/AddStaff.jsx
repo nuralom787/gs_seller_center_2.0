@@ -275,6 +275,7 @@ const AddStaff = () => {
                                         className="w-full p-3 text-base rounded-md border border-gray-200 focus:border-gray-500 dark:border-gray-500 dark:focus:border-gray-100 bg-gray-100 dark:bg-gray-900 text-[#151515] dark:text-white outline-0"
                                     >
                                         <option value="" hidden>Staff role</option>
+                                        <option value="Super Admin">Super Admin</option>
                                         <option value="Admin">Admin</option>
                                         <option value="CEO">CEO</option>
                                         <option value="Manager">Manager</option>
@@ -282,7 +283,6 @@ const AddStaff = () => {
                                         <option value="Driver">Driver</option>
                                         <option value="Security Guard">Security Guard</option>
                                         <option value="Deliver Person">Delivery Person</option>
-                                        <option value="Test User">Test User</option>
                                     </select>
                                     {errors.role && <span className='text-red-600 font-light text-sm mt-1 mb-0 mx-0 w-fit rounded-sm'>{errors.role.message}</span>}
                                 </div>
