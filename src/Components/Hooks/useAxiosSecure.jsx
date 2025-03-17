@@ -4,8 +4,7 @@ import { useNavigate } from "react-router";
 import { AuthContext } from "../../Provider/AuthProvider";
 
 const axiosSecure = axios.create({
-    baseURL: 'https://gs-dashboard-4864dwebapp.vercel.app',
-    withCredentials: true
+    baseURL: 'https://gs-dashboard-4864dwebapp.vercel.app'
 });
 
 const useAxiosSecure = () => {
@@ -13,15 +12,15 @@ const useAxiosSecure = () => {
     const { LogoutUser } = useContext(AuthContext);
 
     // Request Interceptor
-    // axiosSecure.interceptors.request.use(function (config) {
-    //     // console.log("stop by axios interceptor", token);
-    //     const token = localStorage.getItem('access-token');
-    //     config.headers.authorization = `Bearer ${token}`;
-    //     return config;
-    // }, function (error) {
-    //     // Do something with request error
-    //     return Promise.reject(error);
-    // });
+    axiosSecure.interceptors.request.use(function (config) {
+        // console.log("stop by axios interceptor", token);
+        const token = localStorage.getItem('access-token');
+        config.headers.authorization = `Bearer ${token}`;
+        return config;
+    }, function (error) {
+        // Do something with request error
+        return Promise.reject(error);
+    });
 
 
     // Response Interceptor

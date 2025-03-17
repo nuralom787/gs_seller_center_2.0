@@ -1,19 +1,21 @@
 import { NavLink, useLocation, useNavigate } from "react-router";
 import logo from '../../../../assets/logo.jpg';
 import { useForm } from "react-hook-form";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../../../Provider/AuthProvider";
 import { toast } from "react-toastify";
 
 
 const Login = () => {
-    const { LoginUser, loading } = useContext(AuthContext);
+    const { LoginUser } = useContext(AuthContext);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const location = useLocation();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const from = location.state?.from?.pathname || '/';
 
     const onSubmit = (data) => {
+        setLoading(true);
         const { email, password } = data;
         LoginUser(email, password)
             .then(result => {
@@ -22,7 +24,8 @@ const Login = () => {
                 toast.success('User Login Successfully', {
                     position: 'top-right',
                     autoClose: 2500
-                })
+                });
+                setLoading(false);
                 // console.log(user);
             })
             .catch(err => {
@@ -30,6 +33,7 @@ const Login = () => {
                     position: 'top-center',
                     autoClose: 5000
                 });
+                setLoading(false);
             })
     };
 

@@ -16,25 +16,22 @@ const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, currentUser => {
             setUser(currentUser);
-            const userInfo = { email: currentUser?.email };
-            // setLoading(false);
+            setLoading(false);
             if (currentUser) {
-                axiosPublic.post('/jwt', userInfo, { withCredentials: true })
+                const userInfo = { email: currentUser.email };
+                axiosPublic.post('/jwt', userInfo)
                     .then(res => {
                         // console.log(res.data);
-                        setLoading(false);
+                        if (res.data.token) {
+                            localStorage.setItem('access-token', res.data.token);
+                        }
                     })
                     .catch(err => {
                         console.log(err.message);
                     })
             }
             else {
-                // Call Logout Api.
-                axiosPublic.post("/logout", userInfo, { withCredentials: true })
-                    .then(res => {
-                        console.log(res.data);
-                        setLoading(false);
-                    })
+                localStorage.removeItem('access-token');
             }
         });
 
