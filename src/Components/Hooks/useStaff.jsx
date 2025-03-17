@@ -4,7 +4,7 @@ import useAxiosSecure from "./useAxiosSecure";
 const useStaff = (email = "") => {
     const axiosSecure = useAxiosSecure();
 
-    const { data: staff, refetch, isPending } = useQuery({
+    const { data: staff, refetch, isPending, isError } = useQuery({
         queryKey: ["staff", email],
         queryFn: async () => {
             const res = await axiosSecure.get(`/staff?email=${email}`);
@@ -12,7 +12,7 @@ const useStaff = (email = "") => {
         },
     });
 
-    return [staff, refetch, isPending];
+    return [staff, refetch, isPending, isError];
 };
 
 export default useStaff;

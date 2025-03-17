@@ -58,25 +58,25 @@ const Products = () => {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Delete it!"
         }).then(async (result) => {
-            toast.info("This feature is disabled for demo!", {
-                position: "top-center",
-                autoClose: 1500
-            });
-            // if (result.isConfirmed) {
+            if (result.isConfirmed) {
+                toast.info("This feature is disabled for demo!", {
+                    position: "top-center",
+                    autoClose: 1500
+                });
 
-            //     // Call Delete Api.
-            //     const deleteRes = await axiosSecure.delete(`/product/delete/${product._id}`);
-            //     // console.log(deleteRes);
+                // // Call Delete Api.
+                // const deleteRes = await axiosSecure.delete(`/product/delete/${product._id}`);
+                // // console.log(deleteRes);
 
-            //     if (deleteRes.data.deletedCount > 0) {
-            //         refetch();
-            //         Swal.fire({
-            //             title: "Deleted!",
-            //             html: `<p>The Product <strong>${product.title}</strong> has been deleted successfully.</p>`,
-            //             icon: "success"
-            //         });
-            //     }
-            // }
+                // if (deleteRes.data.deletedCount > 0) {
+                //     refetch();
+                //     Swal.fire({
+                //         title: "Deleted!",
+                //         html: `<p>The Product <strong>${product.title}</strong> has been deleted successfully.</p>`,
+                //         icon: "success"
+                //     });
+                // }
+            }
         });
     };
 

@@ -32,7 +32,6 @@ const Main = () => {
                     open={drawer}
                     onClose={handleDrawer}
                     direction='left'
-                    className='bla bla bla'
                 >
                     <section className='navigation max-h-screen min-h-screen overflow-y-auto dark:bg-base-200'>
                         <div className='flex justify-center items-center gap-2 px-6'>
