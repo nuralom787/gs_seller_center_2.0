@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useContext, useState } from "react";
 import { AuthContext } from "../../../../Provider/AuthProvider";
 import { toast } from "react-toastify";
-
+import './Login.css';
 
 const Login = () => {
     const { LoginUser } = useContext(AuthContext);
@@ -39,7 +39,7 @@ const Login = () => {
 
 
     return (
-        <section className="flex justify-center items-center min-h-screen">
+        <section className="login flex justify-center items-center min-h-screen">
             <div className="w-full max-w-md space-y-8">
                 <div>
                     <img
