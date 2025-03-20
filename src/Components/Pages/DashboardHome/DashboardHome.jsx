@@ -4,6 +4,9 @@ import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveCo
 
 const DashboardHome = () => {
     const [statistic, refetch, isPending, isError] = useDashboardStats();
+    const pendingOrders = statistic?.statusCounts?.find(item => item.status === "Pending");
+    const processingOrders = statistic?.statusCounts?.find(item => item.status === "Processing");
+    const deliveredOrders = statistic?.statusCounts?.find(item => item.status === "Delivered");
 
     // Colors For Charts
     const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', 'red', 'pink'];
@@ -107,7 +110,7 @@ const DashboardHome = () => {
                                     <span>Order Pending</span>
                                     {/* <span className="text-red-400 text-sm font-semibold">(20854.60)</span> */}
                                 </p>
-                                <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">{statistic?.pendingOrders}</p>
+                                <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">{pendingOrders?.count}</p>
                             </div>
                         </div>
                         <div className="p-4 flex items-center border border-gray-200 dark:border-gray-800 w-full rounded-lg">
@@ -119,7 +122,7 @@ const DashboardHome = () => {
                                 <p className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
                                     <span>Order Processing</span>
                                 </p>
-                                <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">{statistic?.processingOrders}</p>
+                                <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">{processingOrders?.count}</p>
                             </div>
                         </div>
                         <div className="p-4 flex items-center border border-gray-200 dark:border-gray-800 w-full rounded-lg">
@@ -131,7 +134,7 @@ const DashboardHome = () => {
                                 <p className="mb-1 text-sm font-medium text-gray-600 dark:text-gray-400">
                                     <span>Order Delivered</span>
                                 </p>
-                                <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">{statistic?.deliveredOrders}</p>
+                                <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">{deliveredOrders?.count}</p>
                             </div>
                         </div>
                     </div>
@@ -143,28 +146,31 @@ const DashboardHome = () => {
                         <div className="skeleton bg-gray-950 h-[400px]"></div>
                     </div>
                     :
-                    <div className="w-full h-[400px]">
-                        <ResponsiveContainer>
-                            <BarChart
-                                data={statistic?.statusCounts}
-                                margin={{
-                                    top: 20,
-                                    right: 10,
-                                    left: -25,
-                                    bottom: 0,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="3 2" />
-                                <XAxis dataKey="status" />
-                                <YAxis />
-                                <Bar dataKey="count" fill="red" shape={<TriangleBar />} label={{ position: 'top' }}>
-                                    {statistic?.statusCounts?.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
-                                    ))}
-                                </Bar>
-                                <Tooltip labelStyle={{ color: "green" }} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                    <div className="w-full bg-gray-300 dark:bg-base-200 p-2 rounded-lg">
+                        <p className="px-4 py-1 text-xl text-[#151515] dark:text-white font-semibold border-b border-gray-600">Status Wise Order</p>
+                        <div className="w-full h-[400px] pt-5">
+                            <ResponsiveContainer>
+                                <BarChart
+                                    data={statistic?.statusCounts}
+                                    margin={{
+                                        top: 20,
+                                        right: 10,
+                                        left: -25,
+                                        bottom: 0,
+                                    }}
+                                >
+                                    <CartesianGrid strokeDasharray="3 2" />
+                                    <XAxis dataKey="status" />
+                                    <YAxis />
+                                    <Bar dataKey="count" fill="red" shape={<TriangleBar />} label={{ position: 'top' }}>
+                                        {statistic?.statusCounts?.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={colors[index % 20]} />
+                                        ))}
+                                    </Bar>
+                                    <Tooltip labelStyle={{ color: "green" }} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 }
                 {isPending || isError ?
@@ -172,27 +178,30 @@ const DashboardHome = () => {
                         <div className="skeleton bg-gray-950 h-[400px]"></div>
                     </div>
                     :
-                    <div className="w-full h-[400px]">
-                        <ResponsiveContainer>
-                            <PieChart>
-                                <Pie
-                                    data={statistic?.methodRevenue}
-                                    cx="50%"
-                                    cy="50%"
-                                    labelLine={false}
-                                    label={renderCustomizedLabel}
-                                    outerRadius={120}
-                                    fill="#8884d8"
-                                    dataKey="totalAmount"
-                                >
-                                    {statistic?.methodRevenue?.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
-                                    ))}
-                                </Pie>
-                                <Legend />
-                                <Tooltip />
-                            </PieChart>
-                        </ResponsiveContainer>
+                    <div className="w-full bg-gray-300 dark:bg-base-200 p-2 rounded-lg">
+                        <p className="px-4 py-1 text-xl text-[#151515] dark:text-white font-semibold border-b border-gray-600">Method Wise Payment</p>
+                        <div className="w-full h-[400px] pt-5">
+                            <ResponsiveContainer>
+                                <PieChart>
+                                    <Pie
+                                        data={statistic?.methodRevenue}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        label={renderCustomizedLabel}
+                                        outerRadius={120}
+                                        fill="#8884d8"
+                                        dataKey="totalAmount"
+                                    >
+                                        {statistic?.methodRevenue?.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                                        ))}
+                                    </Pie>
+                                    <Legend />
+                                    <Tooltip />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 }
             </div>
