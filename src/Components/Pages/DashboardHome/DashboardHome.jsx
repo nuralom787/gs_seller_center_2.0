@@ -1,8 +1,43 @@
 import { Helmet } from "react-helmet-async";
 import useDashboardStats from "../../Hooks/useDashboardStats";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const DashboardHome = () => {
     const [statistic, refetch, isPending, isError] = useDashboardStats();
+
+    // Colors For Charts
+    const colors = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', 'red', 'pink'];
+
+    // Settings For Pie Charts.
+    const RADIAN = Math.PI / 180;
+    const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
+        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+        const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+        return (
+            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+                {`${(percent * 100).toFixed(0)}%`}
+            </text>
+        );
+    };
+
+
+    // Settings For Bar Charts.
+    const getPath = (x, y, width, height) => {
+        return `M${x},${y + height}C${x + width / 3},${y + height} ${x + width / 2},${y + height / 3}
+        ${x + width / 2}, ${y}
+        C${x + width / 2},${y + height / 3} ${x + (2 * width) / 3},${y + height} ${x + width}, ${y + height}
+        Z`;
+    };
+
+    const TriangleBar = (props) => {
+        const { fill, x, y, width, height } = props;
+
+        return <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />;
+    };
+
+
 
     return (
         <section className="max-h-screen min-h-screen overflow-y-auto px-6 pt-20 pb-10 bg-[#FAFAFA] dark:bg-base-300">
@@ -99,6 +134,65 @@ const DashboardHome = () => {
                                 <p className="text-2xl font-bold leading-none text-gray-600 dark:text-gray-200">{statistic?.deliveredOrders}</p>
                             </div>
                         </div>
+                    </div>
+                }
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {isPending || isError ?
+                    <div className=''>
+                        <div className="skeleton bg-gray-950 h-[400px]"></div>
+                    </div>
+                    :
+                    <div className="w-full h-[400px]">
+                        <ResponsiveContainer>
+                            <BarChart
+                                data={statistic?.statusCounts}
+                                margin={{
+                                    top: 20,
+                                    right: 10,
+                                    left: -25,
+                                    bottom: 0,
+                                }}
+                            >
+                                <CartesianGrid strokeDasharray="3 2" />
+                                <XAxis dataKey="status" />
+                                <YAxis />
+                                <Bar dataKey="count" fill="red" shape={<TriangleBar />} label={{ position: 'top' }}>
+                                    {statistic?.statusCounts?.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={colors[index % 20]} />
+                                    ))}
+                                </Bar>
+                                <Tooltip labelStyle={{ color: "green" }} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                }
+                {isPending || isError ?
+                    <div className=''>
+                        <div className="skeleton bg-gray-950 h-[400px]"></div>
+                    </div>
+                    :
+                    <div className="w-full h-[400px]">
+                        <ResponsiveContainer>
+                            <PieChart>
+                                <Pie
+                                    data={statistic?.methodRevenue}
+                                    cx="50%"
+                                    cy="50%"
+                                    labelLine={false}
+                                    label={renderCustomizedLabel}
+                                    outerRadius={120}
+                                    fill="#8884d8"
+                                    dataKey="totalAmount"
+                                >
+                                    {statistic?.methodRevenue?.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
+                                    ))}
+                                </Pie>
+                                <Legend />
+                                <Tooltip />
+                            </PieChart>
+                        </ResponsiveContainer>
                     </div>
                 }
             </div>
