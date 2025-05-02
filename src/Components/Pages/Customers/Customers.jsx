@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { Helmet } from "react-helmet-async";
 import { toast } from "react-toastify";
+import defaultUserImg from '../../../assets/Images/User/user.png';
 
 const Customers = () => {
     const axiosSecure = useAxiosSecure();
@@ -119,22 +120,30 @@ const Customers = () => {
                                                     {
                                                         customers?.customers.map(customer => <tr className='' key={customer._id}>
                                                             <td className='px-3 py-3 font-sans text-xs font-bold'>
-                                                                {customer._id.slice(20, 24).toUpperCase()}
+                                                                {customer.uid}
                                                             </td>
                                                             <td className='px-3 py-3 font-sans flex items-center text-sm'>
-                                                                <img className='w-12 shadow-inner rounded-full p-1 mr-2' src={customer.photoURL} alt="" />
+                                                                <img className='w-12 shadow-inner rounded-full p-1 mr-2' src={customer?.photoURL || defaultUserImg} alt="" />
                                                             </td>
                                                             <td className='px-3 py-3 font-sans text-sm'>
-                                                                {customer.displayName}
+                                                                {customer?.displayName}
                                                             </td>
                                                             <td className='px-3 py-3 font-sans text-sm'>
-                                                                {customer.email}
+                                                                {customer?.email}
                                                             </td>
                                                             <td className='px-3 py-3 font-sans text-sm'>
-                                                                {customer.created.slice(4, 10)}, {customer.created.slice(11, 15)}
+                                                                {new Date(customer.createdAt).toLocaleDateString("en-BD", {
+                                                                    day: "2-digit",
+                                                                    month: "short",
+                                                                    year: "numeric",
+                                                                })}, {new Date(customer.createdAt).toLocaleTimeString("en-BD", {
+                                                                    hour: "2-digit",
+                                                                    minute: "2-digit",
+                                                                    hour12: true,
+                                                                })}
                                                             </td>
                                                             <td className='px-3 py-3 font-sans text-sm'>
-                                                                {customer.phoneNumber}
+                                                                {customer?.phoneNumber}
                                                             </td>
                                                             <td className='px-2 py-3 font-sans text-sm'>
                                                                 <div className="flex">
