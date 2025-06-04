@@ -140,30 +140,30 @@ const Orders = () => {
                                                     {
                                                         orders.orders.map(order => <tr className='' key={order._id}>
                                                             <td className='px-3 py-3 text-xs font-bold'>
-                                                                {order._id.slice(20, 24).toUpperCase()}
+                                                                {order.orderId.split("-")[1]}
                                                             </td>
                                                             <td className='px-3 py-3 text-sm'>
-                                                                {new Date(order.orderTime).toLocaleDateString("en-BD", {
+                                                                {new Date(order.createdAt).toLocaleDateString("en-BD", {
                                                                     day: "2-digit",
                                                                     month: "short",
                                                                     year: "numeric",
-                                                                })} {new Date(order.orderTime).toLocaleTimeString("en-BD", {
+                                                                })} {new Date(order.createdAt).toLocaleTimeString("en-BD", {
                                                                     hour: "2-digit",
                                                                     minute: "2-digit",
                                                                     hour12: true,
                                                                 })}
                                                             </td>
                                                             <td className='px-3 py-3 text-sm'>
-                                                                {order.displayName.split(" ").slice(0, 2).join(" ")}
+                                                                {order.customerInfo.customer_name.split(" ").slice(0, 2).join(" ")}
                                                             </td>
                                                             <td className='px-3 py-3 text-sm'>
-                                                                {order.phoneNumber}
+                                                                {order.customerInfo.customer_phoneNumber}
                                                             </td>
                                                             <td className='px-3 py-3 text-sm font-semibold'>
-                                                                {order.paymentMethod.type}
+                                                                {order.paymentMethod}
                                                             </td>
                                                             <td className='px-2 py-3 text-sm font-semibold'>
-                                                                ${order.grandTotal.toFixed(2)}
+                                                                ${order.total.toFixed(2)}
                                                             </td>
                                                             <td className='px-2 py-3 text-sm'>
                                                                 {order.status === "Pending" &&
