@@ -30,8 +30,7 @@ const useOrders = (email = '') => {
         queryFn: async () => {
             const res = await axiosSecure.get(`/orders?page=${currentPage - 1}&size=${itemPerPage}&email=${email}&search=${search}&status=${status}&date=${date}`);
             return res.data;
-        },
-        placeholderData: keepPreviousData,
+        }
     });
 
     return [orders, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage, handleSearch, handleStatus, handleDate];

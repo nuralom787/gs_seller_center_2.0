@@ -24,8 +24,7 @@ const useCoupons = () => {
         queryFn: async () => {
             const res = await axiosPublic.get(`/coupons?page=${currentPage - 1}&size=${itemPerPage}&search=${search}`);
             return res.data;
-        },
-        placeholderData: keepPreviousData
+        }
     });
 
     return [coupons, refetch, isPending, isError, currentPage, setCurrentPage, itemPerPage, perPageItem, handleSearch];

@@ -19,8 +19,7 @@ const useCategories = () => {
         queryFn: async () => {
             const res = await axiosPublic.get(`/categories?page=${currentPage - 1}&size=${itemPerPage}&search=${search}`)
             return res.data;
-        },
-        placeholderData: keepPreviousData,
+        }
     });
 
     return [categories, refetch, isPending, isError, itemPerPage, currentPage, setItemPerPage, setCurrentPage, handleSearch];

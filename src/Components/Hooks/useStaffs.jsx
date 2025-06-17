@@ -26,8 +26,7 @@ const useStaffs = () => {
         queryFn: async () => {
             const res = await axiosSecure.get(`/staffs?page=${currentPage - 1}&size=${itemPerPage}&email=${email}&search=${search}&role=${role}`);
             return res.data;
-        },
-        placeholderData: keepPreviousData
+        }
     })
 
     return [staffs, refetch, isPending, isError, currentPage, setCurrentPage, itemPerPage, handleSearch, handleRole];

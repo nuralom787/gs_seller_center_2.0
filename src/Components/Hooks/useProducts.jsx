@@ -39,8 +39,7 @@ const useProducts = () => {
         queryFn: async () => {
             const res = await axiosPublic.get(`/products?size=${itemPerPage}&page=${currentPage - 1}&category=${category}&title=${title}&price=${price}`);
             return res.data;
-        },
-        placeholderData: keepPreviousData,
+        }
     });
 
     return [products, refetch, isPending, isError, isRefetching, itemPerPage, currentPage, setCurrentPage, perPageItem, handleSearch, handleCategory, handlePrice];

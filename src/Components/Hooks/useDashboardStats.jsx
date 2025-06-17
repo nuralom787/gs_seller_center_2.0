@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "./useAxiosSecure";
 
 const useDashboardStats = () => {
@@ -9,7 +9,8 @@ const useDashboardStats = () => {
         queryFn: async () => {
             const res = await axiosSecure.get("/dashboard/order-stats");
             return res.data;
-        }
+        },
+        placeholderData: keepPreviousData
     });
 
     return [statistic, refetch, isPending, isError];

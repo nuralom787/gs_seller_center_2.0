@@ -18,8 +18,7 @@ const useCustomers = () => {
         queryFn: async () => {
             const res = await axiosSecure.get(`/customers?page=${currentPage - 1}&size=${itemPerPage}&search=${search}`);
             return res.data;
-        },
-        placeholderData: keepPreviousData,
+        }
     });
 
     return [customers, refetch, isPending, isError, currentPage, setCurrentPage, itemPerPage, handleSearch];
